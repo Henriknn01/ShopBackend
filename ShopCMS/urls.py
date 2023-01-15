@@ -18,5 +18,5 @@ router.register('order-items', OrderItemsViewSet)
 router.register('payment-details', PaymentDetailsViewSet)
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
 ]
