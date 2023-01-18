@@ -1,7 +1,6 @@
-from django.contrib.auth.models import User
 from rest_framework import viewsets
 from ShopCMS.models import Discount, ProductCategory, ProductInventory, OrderDetails, OrderItems, PaymentDetails, \
-    Product
+    Product, User
 from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCategorySerializer, \
     ProductInventorySerializer, OrderDetailsSerializer, OrderItemsSerializer, PaymentDetailsSerializer, \
     ProductSerializer
@@ -17,7 +16,6 @@ from rest_framework.permissions import AllowAny
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
 
 class DiscountViewSet(viewsets.ModelViewSet):
     queryset = Discount.objects.all()

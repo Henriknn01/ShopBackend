@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-s*)$*5)ezi=!6fc=@6mgxo0r8^ll0qc1ote&!rz9zl&ko(c+=y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "ShopCMS",
 ]
+
+AUTH_USER_MODEL = 'ShopCMS.User'
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -152,7 +154,6 @@ JWT_AUTH = {
     'JWT_ISSUER': 'https://norheimweb.eu.auth0.com/',
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
 }
-
 """
 Docker db settings: 
 
