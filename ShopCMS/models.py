@@ -16,6 +16,7 @@ class User(AbstractUser):
         (ADMIN, 'admin'),
     )
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES)
+    subscribed_newsletter = models.BooleanField(default=False)
 
     def __str__(self):
         return "{}".format(self.email)
@@ -34,7 +35,15 @@ class Discount(models.Model):
         return self.name
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=256)
+    description = models.TextField(max_length=500, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
 class ProductCategory(models.Model):
+    parent_category = models.ForeignKey('self', default=None, blank=True, null=True, related_name='sub_categories',
+                                        on_delete=models.SET_NULL)
     name = models.CharField(max_length=256, null=False, blank=False)
     desc = models.TextField(max_length=5000)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -45,7 +54,7 @@ class ProductCategory(models.Model):
         return self.name
 
 
-class ProductInventory(models.Model):
+class ProductInventory(models.Model): # TODO: DELETE THIS AND ADD QUANTITY DIRECTLY TO PRODUCT?
     quantity = models.PositiveIntegerField(blank=False, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -58,11 +67,12 @@ class ProductInventory(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=256, null=False, blank=False)
     desc = models.TextField(max_length=5000)
-    sku = models.CharField(max_length=128)
+    sku = models.CharField(max_length=128, blank=True, null=True)
     category = models.ManyToManyField(ProductCategory)
+    tags = models.ManyToManyField(Tag)
+    cost = models.FloatField(default=0)
+    price = models.FloatField(default=0)
     inventory = models.OneToOneField(ProductInventory, on_delete=models.CASCADE)
-    cost = models.FloatField()
-    price = models.FloatField()
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -72,10 +82,33 @@ class Product(models.Model):
         return self.name
 
 
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    src = models.CharField(max_length=512)
+    alt = models.CharField(max_length=256)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+
+class ProductList(models.Model):
+    name = models.CharField(max_length=256)
+    slug = models.CharField(max_length=256)
+    products = models.ManyToManyField(Product)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
+class WishList(ProductList):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 class ProductReview(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField(max_length=512, null=False, blank=False)
+    content = models.TextField(max_length=1024, null=False, blank=False)
     rating = models.PositiveSmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
