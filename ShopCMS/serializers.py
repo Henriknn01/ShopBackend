@@ -1,8 +1,6 @@
-from .models import User, ProductImage, ProductList, WishList, ProductReview, OrderShippingDetails
 from rest_framework import serializers
-
-from ShopCMS.models import Discount, ProductCategory, ProductInventory, Product, OrderDetails, OrderItems, \
-    PaymentDetails, Tag
+from ShopCMS.models import User, Discount, Tag, ProductCategory, ProductInventory, Product, ProductImage, ProductList, \
+    WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
