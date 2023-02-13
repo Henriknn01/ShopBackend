@@ -24,3 +24,4 @@ def jwt_decode_token(token):
     issuer = 'https://{}/'.format('norheimweb.eu.auth0.com')
     return jwt.decode(token, public_key, audience='https://api.norheimweb.com', issuer=issuer, algorithms=['RS256'])
 
+# TODO: ADD method for uploading, deleting, viewing images/files from cdn
