@@ -1,14 +1,16 @@
 from rest_framework import viewsets
-from ShopCMS.models import Discount, ProductCategory, ProductInventory, OrderDetails, OrderItems, PaymentDetails, \
-    Product, User
+from ShopCMS.models import User, Discount, Tag, ProductCategory, ProductInventory, Product, ProductImage, ProductList, \
+    WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails
 from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCategorySerializer, \
     ProductInventorySerializer, OrderDetailsSerializer, OrderItemsSerializer, PaymentDetailsSerializer, \
-    ProductSerializer
+    ProductSerializer, TagSerializer, ProductImageSerializer, ProductListSerializer, WishListSerializer, \
+    ProductReviewSerializer, OrderShippingDetailsSerializer
 from functools import wraps
 import jwt
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
+
 
 # Create your views here.
 
@@ -17,9 +19,15 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
 class DiscountViewSet(viewsets.ModelViewSet):
     queryset = Discount.objects.all()
     serializer_class = DiscountSerializer
+
+
+class TagViewSet(viewsets.ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
 
 
 class ProductCategoryViewSet(viewsets.ModelViewSet):
@@ -38,6 +46,26 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
 
 
+class ProductImageViewSet(viewsets.ModelViewSet):
+    queryset = ProductImage.objects.all()
+    serializer_class = ProductImageSerializer
+
+
+class ProductListViewSet(viewsets.ModelViewSet):
+    queryset = ProductList.objects.all()
+    serializer_class = ProductListSerializer
+
+
+class WishListViewSet(viewsets.ModelViewSet):
+    queryset = WishList.objects.all()
+    serializer_class = WishListSerializer
+
+
+class ProductReviewViewSet(viewsets.ModelViewSet):
+    queryset = ProductReview.objects.all()
+    serializer_class = ProductReviewSerializer
+
+
 class OrderDetailsViewSet(viewsets.ModelViewSet):
     queryset = OrderDetails.objects.all()
     serializer_class = OrderDetailsSerializer
@@ -46,6 +74,11 @@ class OrderDetailsViewSet(viewsets.ModelViewSet):
 class OrderItemsViewSet(viewsets.ModelViewSet):
     queryset = OrderItems.objects.all()
     serializer_class = OrderItemsSerializer
+
+
+class OrderShippingDetailsViewSet(viewsets.ModelViewSet):
+    queryset = OrderShippingDetails.objects.all()
+    serializer_class = OrderShippingDetailsSerializer
 
 
 class PaymentDetailsViewSet(viewsets.ModelViewSet):
@@ -68,6 +101,7 @@ def requires_scope(required_scope):
     Args:
         required_scope (str): The scope required to access the resource
     """
+
     def require_scope(f):
         @wraps(f)
         def decorated(*args, **kwargs):
@@ -81,8 +115,11 @@ def requires_scope(required_scope):
             response = JsonResponse({'message': 'You don\'t have access to this resource'})
             response.status_code = 403
             return response
+
         return decorated
+
     return require_scope
+
 
 """
 Example views showing how to create public, private and private-scoped views:
