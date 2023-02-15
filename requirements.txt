@@ -14,3 +14,4 @@ django-cors-headers==3.13.0
 drf-jwt==1.19.2
 pyjwt==2.6.0
 requests==2.28.2
+django-guardian==2.4.0

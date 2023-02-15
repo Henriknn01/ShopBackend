@@ -1,21 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from guardian.models import GroupObjectPermissionBase, UserObjectPermissionBase
 
 # Create your models here.
 
 
 class User(AbstractUser):
-    USER = 1
-    SUPPORT = 2
-    SALES = 3
-    ADMIN = 4
-    USER_TYPE_CHOICES = (
-        (USER, 'user'),
-        (SUPPORT, 'support'),
-        (SALES, 'sales'),
-        (ADMIN, 'admin'),
-    )
-    user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES)
     subscribed_newsletter = models.BooleanField(default=False)
 
     def __str__(self):
@@ -40,6 +30,8 @@ class Tag(models.Model):
     description = models.TextField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+
 
 class ProductCategory(models.Model):
     parent_category = models.ForeignKey('self', default=None, blank=True, null=True, related_name='sub_categories',

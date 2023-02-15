@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "ShopCMS",
+    "guardian",
 ]
 
 AUTH_USER_MODEL = 'ShopCMS.User'
@@ -142,6 +143,7 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'django.contrib.auth.backends.RemoteUserBackend',
+    'guardian.backends.ObjectPermissionBackend',
 ]
 
 JWT_AUTH = {
