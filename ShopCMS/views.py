@@ -1,15 +1,19 @@
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
 from rest_framework import viewsets
-from ShopCMS.models import User, Discount, Tag, ProductCategory, ProductInventory, Product, ProductImage, ProductList, \
+
+import ShopCMS.models
+from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, ProductImage, ProductList, \
     WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails
 from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCategorySerializer, \
-    ProductInventorySerializer, OrderDetailsSerializer, OrderItemsSerializer, PaymentDetailsSerializer, \
+    OrderDetailsSerializer, OrderItemsSerializer, PaymentDetailsSerializer, \
     ProductSerializer, TagSerializer, ProductImageSerializer, ProductListSerializer, WishListSerializer, \
     ProductReviewSerializer, OrderShippingDetailsSerializer
 from functools import wraps
 import jwt
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from guardian.mixins import PermissionRequiredMixin, PermissionListMixin
 from guardian.shortcuts import assign_perm
 from guardian.shortcuts import get_objects_for_user, get_objects_for_group
@@ -38,11 +42,6 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ProductCategorySerializer
 
 
-class ProductInventoryViewSet(viewsets.ModelViewSet):
-    queryset = ProductInventory.objects.all()
-    serializer_class = ProductInventorySerializer
-
-
 @permission_classes([AllowAny])
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
@@ -62,6 +61,7 @@ class ProductListViewSet(viewsets.ModelViewSet):
 class WishListViewSet(viewsets.ModelViewSet):
     queryset = WishList.objects.all()
     serializer_class = WishListSerializer
+    #permission_classes = (IsAuthenticated,)
 
 
 class ProductReviewViewSet(viewsets.ModelViewSet):
@@ -87,7 +87,6 @@ class OrderShippingDetailsViewSet(viewsets.ModelViewSet):
 class PaymentDetailsViewSet(viewsets.ModelViewSet):
     queryset = PaymentDetails.objects.all()
     serializer_class = PaymentDetailsSerializer
-
 
 def get_token_auth_header(request):
     """Obtains the Access Token from the Authorization Header

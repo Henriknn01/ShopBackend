@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from ShopCMS.models import User, Discount, Tag, ProductCategory, ProductInventory, Product, ProductImage, ProductList, \
+
+import ShopCMS.views
+from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, ProductImage, ProductList, \
     WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails
 
 
@@ -27,12 +29,6 @@ class ProductCategorySerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
-class ProductInventorySerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = ProductInventory
-        fields = '__all__'
-
-
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Product
@@ -55,6 +51,12 @@ class WishListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = WishList
         fields = '__all__'
+
+    def create(self, validated_data):
+        owner = self.context['request'].user
+        products = validated_data["products"]
+        wishlist = WishList.objects.create(user=owner, products=products)
+        return wishlist
 
 
 class ProductReviewSerializer(serializers.HyperlinkedModelSerializer):
