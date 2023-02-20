@@ -1,3 +1,4 @@
+from guardian.shortcuts import assign_perm
 from rest_framework import serializers
 
 import ShopCMS.views
@@ -54,8 +55,12 @@ class WishListSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         owner = self.context['request'].user
-        products = validated_data["products"]
-        wishlist = WishList.objects.create(user=owner, products=products)
+        products = validated_data.pop('products', [])  # Remove 'products' from validated data
+        wishlist = WishList.objects.create(**validated_data)
+        wishlist.products.set(products)  # Use set() to set the many-to-many relationship
+        assign_perm('change_wishlist', owner, wishlist)
+        assign_perm('delete_wishlist', owner, wishlist)
+        assign_perm('view_wishlist', owner, wishlist)
         return wishlist
 
 
@@ -63,6 +68,14 @@ class ProductReviewSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ProductReview
         fields = '__all__'
+
+    def create(self, validated_data):
+        owner = self.context['request'].user
+        productReview = ProductReview.objects.create(**validated_data)
+        assign_perm('change_productreview', owner, productReview)
+        assign_perm('delete_productreview', owner, productReview)
+        assign_perm('view_productreview', owner, productReview)
+        return productReview
 
 
 class OrderDetailsSerializer(serializers.HyperlinkedModelSerializer):

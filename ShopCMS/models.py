@@ -4,7 +4,7 @@ from guardian.models import GroupObjectPermissionBase, UserObjectPermissionBase
 from guardian.shortcuts import get_objects_for_user
 
 import ShopCMS.models
-from ShopCMS.managers import WhishListManager
+
 
 
 # Create your models here.
@@ -24,7 +24,7 @@ class Discount(models.Model):
     active = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField()
+    deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -45,7 +45,7 @@ class ProductCategory(models.Model):
     desc = models.TextField(max_length=5000)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField()
+    deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -60,10 +60,10 @@ class Product(models.Model):
     cost = models.FloatField(default=0)
     price = models.FloatField(default=0)
     quantity = models.PositiveIntegerField(blank=False, default=0)
-    discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, default=None, null=True)
+    discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, default=None, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField()
+    deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -94,7 +94,10 @@ class WishList(models.Model):
     products = models.ManyToManyField(Product)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    objects = WhishListManager
+
+
+    class Meta:
+        default_permissions = ('view',)
 
 
 # this needs per object

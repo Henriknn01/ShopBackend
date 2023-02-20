@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 import ShopCMS.models
 from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, ProductImage, ProductList, \
@@ -12,8 +13,8 @@ from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCateg
 from functools import wraps
 import jwt
 from django.http import JsonResponse
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from guardian.mixins import PermissionRequiredMixin, PermissionListMixin
 from guardian.shortcuts import assign_perm
 from guardian.shortcuts import get_objects_for_user, get_objects_for_group
@@ -42,10 +43,14 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ProductCategorySerializer
 
 
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticatedOrReadOnly])
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+    def permission_denied(self, request, message=None):
+        print(f"Permission denied: {message}")
+        super().permission_denied(request, message=message)
 
 
 class ProductImageViewSet(viewsets.ModelViewSet):
@@ -61,7 +66,10 @@ class ProductListViewSet(viewsets.ModelViewSet):
 class WishListViewSet(viewsets.ModelViewSet):
     queryset = WishList.objects.all()
     serializer_class = WishListSerializer
-    #permission_classes = (IsAuthenticated,)
+
+    # permission_classes = (IsAuthenticated,)
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class ProductReviewViewSet(viewsets.ModelViewSet):
@@ -87,6 +95,7 @@ class OrderShippingDetailsViewSet(viewsets.ModelViewSet):
 class PaymentDetailsViewSet(viewsets.ModelViewSet):
     queryset = PaymentDetails.objects.all()
     serializer_class = PaymentDetailsSerializer
+
 
 def get_token_auth_header(request):
     """Obtains the Access Token from the Authorization Header
@@ -121,7 +130,6 @@ def requires_scope(required_scope):
         return decorated
 
     return require_scope
-
 
 
 """
