@@ -16,7 +16,7 @@ from django.http import JsonResponse
 
 # Create your views here.
 
-z
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
