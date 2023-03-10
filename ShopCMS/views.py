@@ -1,9 +1,7 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from requests import Response
 from rest_framework import viewsets, permissions
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly, SAFE_METHODS, IsAdminUser
 
-import ShopCMS.models
 from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, ProductImage, ProductList, \
     WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails
 from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCategorySerializer, \
@@ -13,24 +11,23 @@ from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCateg
 from functools import wraps
 import jwt
 from django.http import JsonResponse
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
-from guardian.mixins import PermissionRequiredMixin, PermissionListMixin
-from guardian.shortcuts import assign_perm
-from guardian.shortcuts import get_objects_for_user, get_objects_for_group
+
 
 
 # Create your views here.
 
-
+z
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+
 
 
 class DiscountViewSet(viewsets.ModelViewSet):
     queryset = Discount.objects.all()
     serializer_class = DiscountSerializer
+
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -43,14 +40,12 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ProductCategorySerializer
 
 
-@permission_classes([IsAuthenticatedOrReadOnly])
+
+
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-    def permission_denied(self, request, message=None):
-        print(f"Permission denied: {message}")
-        super().permission_denied(request, message=message)
 
 
 class ProductImageViewSet(viewsets.ModelViewSet):
@@ -58,16 +53,18 @@ class ProductImageViewSet(viewsets.ModelViewSet):
     serializer_class = ProductImageSerializer
 
 
+
 class ProductListViewSet(viewsets.ModelViewSet):
     queryset = ProductList.objects.all()
     serializer_class = ProductListSerializer
+
 
 
 class WishListViewSet(viewsets.ModelViewSet):
     queryset = WishList.objects.all()
     serializer_class = WishListSerializer
 
-    # permission_classes = (IsAuthenticated,)
+
     def perform_create(self, serializer):
         serializer.save()
 
@@ -77,24 +74,48 @@ class ProductReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ProductReviewSerializer
 
 
+    def perform_create(self, serializer):
+        serializer.save()
+
+
 class OrderDetailsViewSet(viewsets.ModelViewSet):
     queryset = OrderDetails.objects.all()
     serializer_class = OrderDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class OrderItemsViewSet(viewsets.ModelViewSet):
     queryset = OrderItems.objects.all()
     serializer_class = OrderItemsSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class OrderShippingDetailsViewSet(viewsets.ModelViewSet):
     queryset = OrderShippingDetails.objects.all()
     serializer_class = OrderShippingDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class PaymentDetailsViewSet(viewsets.ModelViewSet):
     queryset = PaymentDetails.objects.all()
     serializer_class = PaymentDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 def get_token_auth_header(request):

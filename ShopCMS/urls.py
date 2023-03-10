@@ -9,19 +9,19 @@ from ShopCMS.views import UserViewSet, DiscountViewSet, ProductCategoryViewSet, 
 router = routers.DefaultRouter()
 
 # Register views in the router here:
-router.register('users', UserViewSet, basename='users')
-router.register('discounts', DiscountViewSet, basename='discounts')
-router.register('Tag', TagViewSet, basename='tags')
-router.register('product-categories', ProductCategoryViewSet, basename='product-categories')
-router.register('products', ProductViewSet, basename='products')
-router.register('productsImage', ProductImageViewSet, basename='product-images')
-router.register('productsList', ProductListViewSet, basename='product-lists')
+router.register('user', UserViewSet, basename='user')
+router.register('discount', DiscountViewSet, basename='discount')
+router.register('tag', TagViewSet, basename='tag')
+router.register('productcategory', ProductCategoryViewSet, basename='product-category')
+router.register('product', ProductViewSet, basename='product')
+router.register('productsImage', ProductImageViewSet, basename='product-image')
+router.register('productlist', ProductListViewSet, basename='product-list')
 router.register('wishlist', WishListViewSet, basename='wishlist')
-router.register('productReview', ProductReviewViewSet, basename='product-reviews')
-router.register('order-details', OrderDetailsViewSet, basename='order-details')
-router.register('order-items', OrderItemsViewSet, basename='order-items')
-router.register('order-shipping-detail', OrderShippingDetailsViewSet, basename='order-shipping-details')
-router.register('payment-details', PaymentDetailsViewSet, basename='payment-details')
+router.register('productReview', ProductReviewViewSet, basename='product-review')
+router.register('order', OrderDetailsViewSet, basename='order-detail')
+router.register('order-item', OrderItemsViewSet, basename='order-item')
+router.register('order-shipping', OrderShippingDetailsViewSet, basename='order-shipping-detail')
+router.register('payment', PaymentDetailsViewSet, basename='payment-detail')
 
 urlpatterns = [
     path('', include(router.urls)),
