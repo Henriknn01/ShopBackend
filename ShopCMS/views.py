@@ -1,6 +1,6 @@
 from requests import Response
 from rest_framework import viewsets, permissions
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly, SAFE_METHODS, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, ProductImage, ProductList, \
     WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails

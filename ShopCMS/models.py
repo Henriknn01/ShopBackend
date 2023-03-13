@@ -1,9 +1,8 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from guardian.models import GroupObjectPermissionBase, UserObjectPermissionBase
-from guardian.shortcuts import get_objects_for_user
-
-import ShopCMS.models
 
 
 
@@ -14,7 +13,7 @@ class User(AbstractUser):
     subscribed_newsletter = models.BooleanField(default=False)
 
     def __str__(self):
-        return "{}".format(self.email)
+        return f"{self.username}"
 
 # this needs no perms, everybody even anon should be able to see discount
 class Discount(models.Model):
@@ -27,7 +26,7 @@ class Discount(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name}-{self.id}"
 
 # this needs no perms, everybody even anon should be able to see tags
 class Tag(models.Model):
@@ -35,6 +34,9 @@ class Tag(models.Model):
     description = models.TextField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}-{self.id}"
 
 
 # this needs no perms, everybody even anon should be able to see categorys
@@ -48,7 +50,7 @@ class ProductCategory(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name}-{self.id}"
 
 # this needs only perms on cost where we cant share what we buy them for
 class Product(models.Model):
@@ -66,7 +68,7 @@ class Product(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name}-{self.id}"
 
 # this needs no perms to view
 class ProductImage(models.Model):
@@ -75,6 +77,9 @@ class ProductImage(models.Model):
     alt = models.CharField(max_length=256)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.product.name}-{self.src}-{self.id}"
 
 # this needs no perms to view
 class ProductList(models.Model):
@@ -90,7 +95,7 @@ class ProductList(models.Model):
 # this needs per object as only the user who created can edit, everybody can view
 class WishList(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    slug = models.CharField(max_length=256) #TODO: auto gen hash
+    slug = models.CharField(max_length=256, default=uuid.uuid4) #TODO: auto gen hash
     products = models.ManyToManyField(Product)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -98,6 +103,9 @@ class WishList(models.Model):
 
     class Meta:
         default_permissions = ('view',)
+
+    def __str__(self):
+        return f"{self.slug}"
 
 
 # this needs per object
@@ -109,6 +117,9 @@ class ProductReview(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.product.name}-{self.author.id}"
+
 # this needs per object
 class OrderDetails(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -118,9 +129,9 @@ class OrderDetails(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.id
+        return f"{self.id}"
 
-# this needs per object
+
 class OrderItems(models.Model):
     order = models.ForeignKey(OrderDetails, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
@@ -131,7 +142,7 @@ class OrderItems(models.Model):
     def __str__(self):
         return f"{self.product.name} - {self.quantity}"
 
-# this needs per object
+
 class OrderShippingDetails(models.Model):
     order = models.ForeignKey(OrderDetails, on_delete=models.PROTECT)
     full_name = models.CharField(max_length=256)
