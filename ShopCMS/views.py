@@ -1,15 +1,17 @@
-from rest_framework import viewsets
-from ShopCMS.models import User, Discount, Tag, ProductCategory, ProductInventory, Product, ProductImage, ProductList, \
+from requests import Response
+from rest_framework import viewsets, permissions
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
+from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, ProductImage, ProductList, \
     WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails
 from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCategorySerializer, \
-    ProductInventorySerializer, OrderDetailsSerializer, OrderItemsSerializer, PaymentDetailsSerializer, \
+    OrderDetailsSerializer, OrderItemsSerializer, PaymentDetailsSerializer, \
     ProductSerializer, TagSerializer, ProductImageSerializer, ProductListSerializer, WishListSerializer, \
     ProductReviewSerializer, OrderShippingDetailsSerializer
 from functools import wraps
 import jwt
 from django.http import JsonResponse
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+
 
 
 # Create your views here.
@@ -18,11 +20,14 @@ from rest_framework.permissions import AllowAny
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+
 
 
 class DiscountViewSet(viewsets.ModelViewSet):
     queryset = Discount.objects.all()
     serializer_class = DiscountSerializer
+
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -35,15 +40,12 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ProductCategorySerializer
 
 
-class ProductInventoryViewSet(viewsets.ModelViewSet):
-    queryset = ProductInventory.objects.all()
-    serializer_class = ProductInventorySerializer
 
 
-@permission_classes([AllowAny])
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
 
 
 class ProductImageViewSet(viewsets.ModelViewSet):
@@ -51,9 +53,11 @@ class ProductImageViewSet(viewsets.ModelViewSet):
     serializer_class = ProductImageSerializer
 
 
+
 class ProductListViewSet(viewsets.ModelViewSet):
     queryset = ProductList.objects.all()
     serializer_class = ProductListSerializer
+
 
 
 class WishListViewSet(viewsets.ModelViewSet):
@@ -61,29 +65,57 @@ class WishListViewSet(viewsets.ModelViewSet):
     serializer_class = WishListSerializer
 
 
+    def perform_create(self, serializer):
+        serializer.save()
+
+
 class ProductReviewViewSet(viewsets.ModelViewSet):
     queryset = ProductReview.objects.all()
     serializer_class = ProductReviewSerializer
 
 
+    def perform_create(self, serializer):
+        serializer.save()
+
+
 class OrderDetailsViewSet(viewsets.ModelViewSet):
     queryset = OrderDetails.objects.all()
     serializer_class = OrderDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class OrderItemsViewSet(viewsets.ModelViewSet):
     queryset = OrderItems.objects.all()
     serializer_class = OrderItemsSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class OrderShippingDetailsViewSet(viewsets.ModelViewSet):
     queryset = OrderShippingDetails.objects.all()
     serializer_class = OrderShippingDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class PaymentDetailsViewSet(viewsets.ModelViewSet):
     queryset = PaymentDetails.objects.all()
     serializer_class = PaymentDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 def get_token_auth_header(request):

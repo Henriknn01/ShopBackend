@@ -1,13 +1,28 @@
 from django.contrib import admin
-from .models import Discount, ProductCategory, ProductInventory, Product, OrderDetails, OrderItems, PaymentDetails, \
-    OrderShippingDetails
+from .models import Discount, ProductCategory, Product, OrderDetails, OrderItems, PaymentDetails, \
+    OrderShippingDetails, User, Tag, ProductImage, ProductList, WishList, ProductReview
+from guardian.admin import GuardedModelAdmin
 # Register your models here.
 
-admin.site.register(Discount)
-admin.site.register(ProductCategory)
-admin.site.register(ProductInventory)
-admin.site.register(Product)
-admin.site.register(OrderDetails)
-admin.site.register(OrderItems)
-admin.site.register(PaymentDetails)
-admin.site.register(OrderShippingDetails)
+
+class ShopCMSAdmin(GuardedModelAdmin):
+    pass
+
+admin.site.register(Discount, ShopCMSAdmin)
+admin.site.register(Tag, ShopCMSAdmin)
+admin.site.register(ProductCategory, ShopCMSAdmin)
+admin.site.register(Product, ShopCMSAdmin)
+admin.site.register(ProductImage, ShopCMSAdmin)
+admin.site.register(ProductList, ShopCMSAdmin)
+
+# gray area
+admin.site.register(User, ShopCMSAdmin)
+
+# needs object level perm
+admin.site.register(WishList, ShopCMSAdmin)
+admin.site.register(ProductReview, ShopCMSAdmin)
+admin.site.register(OrderDetails, ShopCMSAdmin)
+admin.site.register(OrderItems, ShopCMSAdmin)
+admin.site.register(OrderShippingDetails, ShopCMSAdmin)
+admin.site.register(PaymentDetails, ShopCMSAdmin)
+

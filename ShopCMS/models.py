@@ -1,27 +1,21 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from guardian.models import GroupObjectPermissionBase, UserObjectPermissionBase
+
+
 
 # Create your models here.
 
-
+# this needs per object perms, each user can see its own related data
 class User(AbstractUser):
-    USER = 1
-    SUPPORT = 2
-    SALES = 3
-    ADMIN = 4
-    USER_TYPE_CHOICES = (
-        (USER, 'user'),
-        (SUPPORT, 'support'),
-        (SALES, 'sales'),
-        (ADMIN, 'admin'),
-    )
-    user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES)
     subscribed_newsletter = models.BooleanField(default=False)
 
     def __str__(self):
-        return "{}".format(self.email)
+        return f"{self.username}"
 
-
+# this needs no perms, everybody even anon should be able to see discount
 class Discount(models.Model):
     name = models.CharField(max_length=256, null=False, blank=False)
     desc = models.TextField(max_length=5000)
@@ -29,18 +23,23 @@ class Discount(models.Model):
     active = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField()
+    deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name}-{self.id}"
 
-
+# this needs no perms, everybody even anon should be able to see tags
 class Tag(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.name}-{self.id}"
+
+
+# this needs no perms, everybody even anon should be able to see categorys
 class ProductCategory(models.Model):
     parent_category = models.ForeignKey('self', default=None, blank=True, null=True, related_name='sub_categories',
                                         on_delete=models.SET_NULL)
@@ -48,22 +47,12 @@ class ProductCategory(models.Model):
     desc = models.TextField(max_length=5000)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField()
+    deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name}-{self.id}"
 
-
-class ProductInventory(models.Model): # TODO: DELETE THIS AND ADD QUANTITY DIRECTLY TO PRODUCT?
-    quantity = models.PositiveIntegerField(blank=False, default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField()
-
-    def __str__(self):
-        return f"{self.product.name}: {self.quantity}"
-
-
+# this needs only perms on cost where we cant share what we buy them for
 class Product(models.Model):
     name = models.CharField(max_length=256, null=False, blank=False)
     desc = models.TextField(max_length=5000)
@@ -72,16 +61,16 @@ class Product(models.Model):
     tags = models.ManyToManyField(Tag)
     cost = models.FloatField(default=0)
     price = models.FloatField(default=0)
-    inventory = models.OneToOneField(ProductInventory, on_delete=models.CASCADE)
-    discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, default=None, null=True)
+    quantity = models.PositiveIntegerField(blank=False, default=0)
+    discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, default=None, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField()
+    deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name}-{self.id}"
 
-
+# this needs no perms to view
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     src = models.CharField(max_length=512)
@@ -89,7 +78,10 @@ class ProductImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.product.name}-{self.src}-{self.id}"
 
+# this needs no perms to view
 class ProductList(models.Model):
     name = models.CharField(max_length=256)
     slug = models.CharField(max_length=256)
@@ -100,11 +92,23 @@ class ProductList(models.Model):
     def __str__(self):
         return self.name
 
-
-class WishList(ProductList):
+# this needs per object as only the user who created can edit, everybody can view
+class WishList(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    slug = models.CharField(max_length=256, default=uuid.uuid4) #TODO: auto gen hash
+    products = models.ManyToManyField(Product)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
 
+    class Meta:
+        default_permissions = ('view',)
+
+    def __str__(self):
+        return f"{self.slug}"
+
+
+# this needs per object
 class ProductReview(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -113,7 +117,10 @@ class ProductReview(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.product.name}-{self.author.id}"
 
+# this needs per object
 class OrderDetails(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     total = models.FloatField()
@@ -122,7 +129,7 @@ class OrderDetails(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.id
+        return f"{self.id}"
 
 
 class OrderItems(models.Model):
@@ -146,7 +153,7 @@ class OrderShippingDetails(models.Model):
     postal_code = models.PositiveIntegerField()
     phone_number = models.CharField(max_length=128)
 
-
+# this needs per object
 class PaymentDetails(models.Model):
     order = models.OneToOneField(OrderDetails, on_delete=models.PROTECT)
     amount = models.FloatField()
