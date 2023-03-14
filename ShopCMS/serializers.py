@@ -39,23 +39,13 @@ class TagSerializer(serializers.ModelSerializer):
         return tag
 
 
-class ProductCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductCategory
-        fields = '__all__'
-
-    def create(self, validated_data):
-        group = Group.objects.get(name="sale")
-        productCategory = ProductCategory.objects.create(**validated_data)
-        assign_perm('change_productcategory', group, productCategory)
-        assign_perm('delete_productcategory', group, productCategory)
-        return productCategory
-
 
 class ProductSerializer(serializers.ModelSerializer):
+    images = serializers.SlugRelatedField(many=True, read_only=True, slug_field="src")
+
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ["name", "price", "images", "category"]
 
     def create(self, validated_data):
         group = Group.objects.get(name="sale")
@@ -63,6 +53,21 @@ class ProductSerializer(serializers.ModelSerializer):
         assign_perm('change_product', group, product)
         assign_perm('delete_product', group, product)
         return product
+
+
+class ProductCategorySerializer(serializers.ModelSerializer):
+    products = ProductSerializer(many=True)
+
+    class Meta:
+        model = ProductCategory
+        fields = ["id", "name", "products"]
+
+    def create(self, validated_data):
+        group = Group.objects.get(name="sale")
+        productCategory = ProductCategory.objects.create(**validated_data)
+        assign_perm('change_productcategory', group, productCategory)
+        assign_perm('delete_productcategory', group, productCategory)
+        return productCategory
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -178,6 +183,7 @@ class OrderShippingDetailsSerializer(serializers.ModelSerializer):
         # Group perms
         assign_perm('view_ordershippingdetails', group, ordershippingdetails)
         return ordershippingdetails
+
 
 class PaymentDetailsSerializer(serializers.ModelSerializer):
     class Meta:

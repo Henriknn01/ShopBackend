@@ -1,6 +1,7 @@
 from requests import Response
 from rest_framework import viewsets, permissions
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.renderers import JSONRenderer
 
 from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, ProductImage, ProductList, \
     WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails
@@ -10,8 +11,7 @@ from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCateg
     ProductReviewSerializer, OrderShippingDetailsSerializer
 from functools import wraps
 import jwt
-from django.http import JsonResponse
-
+from django.http import JsonResponse, HttpResponse
 
 
 # Create your views here.
@@ -45,7 +45,6 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-
 
 
 class ProductImageViewSet(viewsets.ModelViewSet):
