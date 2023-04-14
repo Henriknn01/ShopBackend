@@ -3,17 +3,27 @@ import uuid
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from guardian.models import GroupObjectPermissionBase, UserObjectPermissionBase
+from django.utils.translation import gettext_lazy as _
 
+from ShopCMS.managers import UserAccountManager
 
 
 # Create your models here.
 
+
 # this needs per object perms, each user can see its own related data
 class User(AbstractUser):
+    username = None
+    email = models.EmailField(_('email address'), unique=True)
     subscribed_newsletter = models.BooleanField(default=False)
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = UserAccountManager()
+
     def __str__(self):
-        return f"{self.username}"
+        return f"{self.email}"
 
 # this needs no perms, everybody even anon should be able to see discount
 class Discount(models.Model):
