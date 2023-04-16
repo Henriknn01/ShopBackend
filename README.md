@@ -10,6 +10,8 @@ You can install these packages using pip:
 Next, you will need to set up a database for ShopBackend to use. By default, ShopBackend is configured to use a SQLite database, but you can use any database supported by Django.
 To set up the database, run the following command:
 
+`python manage.py makemigrations`
+
 `python manage.py migrate`
 
 Finally, you can start the development server by running:
