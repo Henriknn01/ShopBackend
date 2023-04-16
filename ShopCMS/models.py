@@ -3,13 +3,22 @@ import uuid
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from guardian.models import GroupObjectPermissionBase, UserObjectPermissionBase
+from django.utils.translation import gettext_lazy as _
 
+from ShopCMS.managers import UserAccountManager
 
 class User(AbstractUser):
+    username = None
+    email = models.EmailField(_('email address'), unique=True)
     subscribed_newsletter = models.BooleanField(default=False)
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = UserAccountManager()
+
     def __str__(self):
-        return f"{self.username}"
+        return f"{self.email}"
 
     """
     Model representing a user with a subscribed_newsletter field.

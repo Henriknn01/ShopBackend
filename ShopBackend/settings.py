@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "ShopCMS",
     "guardian",
+    'djoser',
 ]
 
 AUTH_USER_MODEL = 'ShopCMS.User'
@@ -134,6 +136,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
@@ -146,16 +149,52 @@ AUTHENTICATION_BACKENDS = [
     'guardian.backends.ObjectPermissionBackend',
 ]
 
-JWT_AUTH = {
-    'JWT_PAYLOAD_GET_USERNAME_HANDLER':
-        'ShopCMS.utils.jwt_get_username_from_payload_handler',
-    'JWT_DECODE_HANDLER':
-        'ShopCMS.utils.jwt_decode_token',
-    'JWT_ALGORITHM': 'RS256',
-    'JWT_AUDIENCE': 'https://api.norheimweb.com',
-    'JWT_ISSUER': 'https://norheimweb.eu.auth0.com/',
-    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+ACCOUNT_SERIALIZER = 'ShopCMS.djoserSerializers.UserCreateSerializer'
+
+PRODUCTION = False
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+if PRODUCTION:
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+else:
+    EMAIL_HOST_USER = 'test@gmail.com'
+    EMAIL_HOST_PASSWORD = 'Password123'
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'SIGNING_KEY': SECRET_KEY,
+    'TOKEN_OBTAIN_SERIALIZER': "ShopCMS.djoserSerializers.ShopCMSTokenObtainPairSerializer",
+    'AUTH_TOKEN_CLASSES': (
+       'rest_framework_simplejwt.tokens.AccessToken',
+   )
 }
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+    'SET_PASSWORD_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'SERIALIZERS': {
+       'user_create': ACCOUNT_SERIALIZER,
+       'user': ACCOUNT_SERIALIZER,
+       'current_user': ACCOUNT_SERIALIZER,
+       'user_delete': 'djoser.serializers.UserDeleteSerializer',
+   }
+}
+
+
+
 """
 Docker db settings: 
 
