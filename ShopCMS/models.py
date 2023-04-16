@@ -7,11 +7,6 @@ from django.utils.translation import gettext_lazy as _
 
 from ShopCMS.managers import UserAccountManager
 
-
-# Create your models here.
-
-
-# this needs per object perms, each user can see its own related data
 class User(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
@@ -25,7 +20,11 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.email}"
 
-# this needs no perms, everybody even anon should be able to see discount
+    """
+    Model representing a user with a subscribed_newsletter field.
+    """
+
+
 class Discount(models.Model):
     name = models.CharField(max_length=256, null=False, blank=False)
     desc = models.TextField(max_length=5000)
@@ -38,7 +37,11 @@ class Discount(models.Model):
     def __str__(self):
         return f"{self.name}-{self.id}"
 
-# this needs no perms, everybody even anon should be able to see tags
+    """
+    Model representing a discount with a name, description, discount price, active status, and timestamp fields.
+    """
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField(max_length=500, blank=True, null=True)
@@ -62,17 +65,27 @@ class ProductCategory(models.Model):
     def __str__(self):
         return f"{self.name}-{self.id}"
 
+class Image(models.Model):
+    src = models.CharField(max_length=512)
+    alt = models.CharField(max_length=256)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.src}-{self.id}"
+
 # this needs only perms on cost where we cant share what we buy them for
 class Product(models.Model):
     name = models.CharField(max_length=256, null=False, blank=False)
     desc = models.TextField(max_length=5000)
     sku = models.CharField(max_length=128, blank=True, null=True)
-    category = models.ManyToManyField(ProductCategory)
-    tags = models.ManyToManyField(Tag)
+    category = models.ManyToManyField(ProductCategory, related_name="products", blank=True)
+    tag = models.ManyToManyField(Tag, blank=True)
     cost = models.FloatField(default=0)
     price = models.FloatField(default=0)
     quantity = models.PositiveIntegerField(blank=False, default=0)
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, default=None, null=True, blank=True)
+    image = models.ManyToManyField(Image, related_name="images", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
@@ -80,16 +93,10 @@ class Product(models.Model):
     def __str__(self):
         return f"{self.name}-{self.id}"
 
-# this needs no perms to view
-class ProductImage(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    src = models.CharField(max_length=512)
-    alt = models.CharField(max_length=256)
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f"{self.product.name}-{self.src}-{self.id}"
+# this needs no perms to view
+
+
 
 # this needs no perms to view
 class ProductList(models.Model):
@@ -102,14 +109,14 @@ class ProductList(models.Model):
     def __str__(self):
         return self.name
 
+
 # this needs per object as only the user who created can edit, everybody can view
 class WishList(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    slug = models.CharField(max_length=256, default=uuid.uuid4) #TODO: auto gen hash
+    slug = models.CharField(max_length=256, default=uuid.uuid4)
     products = models.ManyToManyField(Product)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-
 
     class Meta:
         default_permissions = ('view',)
@@ -129,6 +136,7 @@ class ProductReview(models.Model):
 
     def __str__(self):
         return f"{self.product.name}-{self.author.id}"
+
 
 # this needs per object
 class OrderDetails(models.Model):
@@ -163,6 +171,7 @@ class OrderShippingDetails(models.Model):
     postal_code = models.PositiveIntegerField()
     phone_number = models.CharField(max_length=128)
 
+
 # this needs per object
 class PaymentDetails(models.Model):
     order = models.OneToOneField(OrderDetails, on_delete=models.PROTECT)
@@ -174,3 +183,7 @@ class PaymentDetails(models.Model):
 
     def __str__(self):
         return f"{self.order.id}: {self.status}"
+# check if user is appart of sales
+#pops data that will be set later, and creates product
+# change products to set catagory, tags and images
+# assign perms to group
