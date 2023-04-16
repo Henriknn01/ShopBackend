@@ -3,11 +3,11 @@ from rest_framework import viewsets, permissions
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.renderers import JSONRenderer
 
-from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, ProductImage, ProductList, \
+from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, Image, ProductList, \
     WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails
 from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCategorySerializer, \
     OrderDetailsSerializer, OrderItemsSerializer, PaymentDetailsSerializer, \
-    ProductSerializer, TagSerializer, ProductImageSerializer, ProductListSerializer, WishListSerializer, \
+    ProductSerializer, TagSerializer, ImageSerializer, ProductListSerializer, WishListSerializer, \
     ProductReviewSerializer, OrderShippingDetailsSerializer
 from functools import wraps
 import jwt
@@ -60,9 +60,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer.save()
 
 
-class ProductImageViewSet(viewsets.ModelViewSet):
-    queryset = ProductImage.objects.all()
-    serializer_class = ProductImageSerializer
+class ImageViewSet(viewsets.ModelViewSet):
+    queryset = Image.objects.all()
+    serializer_class = ImageSerializer
 
     def perform_create(self, serializer):
         serializer.save()

@@ -56,7 +56,7 @@ class ProductCategory(models.Model):
     def __str__(self):
         return f"{self.name}-{self.id}"
 
-class ProductImage(models.Model):
+class Image(models.Model):
     src = models.CharField(max_length=512)
     alt = models.CharField(max_length=256)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -71,12 +71,12 @@ class Product(models.Model):
     desc = models.TextField(max_length=5000)
     sku = models.CharField(max_length=128, blank=True, null=True)
     category = models.ManyToManyField(ProductCategory, related_name="products", blank=True)
-    tags = models.ManyToManyField(Tag, blank=True)
+    tag = models.ManyToManyField(Tag, blank=True)
     cost = models.FloatField(default=0)
     price = models.FloatField(default=0)
     quantity = models.PositiveIntegerField(blank=False, default=0)
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, default=None, null=True, blank=True)
-    images = models.ManyToManyField(ProductImage, related_name="images", blank=True)
+    image = models.ManyToManyField(Image, related_name="images", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(blank=True, null=True)

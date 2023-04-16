@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from rest_framework.exceptions import PermissionDenied
 
 import ShopCMS.views
-from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, ProductImage, ProductList, \
+from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, Image, ProductList, \
     WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails
 
 
@@ -115,9 +115,9 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         return productCategory
 
 
-class ProductImageSerializer(serializers.ModelSerializer):
+class ImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProductImage
+        model = Image
         fields = '__all__'
 
     def create(self, validated_data):
@@ -128,13 +128,13 @@ class ProductImageSerializer(serializers.ModelSerializer):
         if not user.groups.filter(name='sale').exists():
             raise PermissionDenied("You don't have permission to create a product.")
 
-        # creates productImage
-        productImage = ProductImage.objects.create(**validated_data)
+        # creates Image
+        CreatedImage = Image.objects.create(**validated_data)
 
         # assign perms to group
-        assign_perm('change_productimage', group, productImage)
-        assign_perm('delete_productimage', group, productImage)
-        return productImage
+        assign_perm('change_image', group, CreatedImage)
+        assign_perm('delete_image', group, CreatedImage)
+        return CreatedImage
 
 
 

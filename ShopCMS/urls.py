@@ -3,7 +3,7 @@ from django.urls import path, include
 from rest_framework import routers
 
 from ShopCMS.views import UserViewSet, DiscountViewSet, ProductCategoryViewSet, ProductViewSet, \
-    OrderDetailsViewSet, OrderItemsViewSet, PaymentDetailsViewSet, WishListViewSet, TagViewSet, ProductImageViewSet, \
+    OrderDetailsViewSet, OrderItemsViewSet, PaymentDetailsViewSet, WishListViewSet, TagViewSet, ImageViewSet, \
     ProductListViewSet, ProductReviewViewSet, OrderShippingDetailsViewSet
 
 router = routers.DefaultRouter()
@@ -14,7 +14,7 @@ router.register('discount', DiscountViewSet, basename='discount')
 router.register('tag', TagViewSet, basename='tag')
 router.register('productcategory', ProductCategoryViewSet, basename='product-category')
 router.register('product', ProductViewSet, basename='product')
-router.register('productsImage', ProductImageViewSet, basename='product-image')
+router.register('Image', ImageViewSet, basename='image')
 router.register('productlist', ProductListViewSet, basename='product-list')
 router.register('wishlist', WishListViewSet, basename='wishlist')
 router.register('productReview', ProductReviewViewSet, basename='product-review')
