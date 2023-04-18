@@ -177,13 +177,20 @@ class PaymentDetails(models.Model):
     order = models.OneToOneField(OrderDetails, on_delete=models.PROTECT)
     amount = models.FloatField()
     provider = models.CharField(max_length=256, null=False, default="Unknown")
-    status = models.CharField(max_length=256, default="Processing")
+    status = model.CharField(max_length=256, default="Processing")
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.order.id}: {self.status}"
-# check if user is appart of sales
-#pops data that will be set later, and creates product
-# change products to set catagory, tags and images
-# assign perms to group
+
+
+#  https://www.tiny.cloud/
+class BlogPost(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    banner_image = models.ForeignKey(Image)
+    title = models.CharField(max_length=256, null=False)
+    short_content_display = models.TextField()
+    content = models.TextField(max_length=1024, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)

@@ -5,7 +5,7 @@ from rest_framework.exceptions import PermissionDenied
 
 import ShopCMS.views
 from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, Image, ProductList, \
-    WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails
+    WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails, BlogPost
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -64,6 +64,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
+        # TODO: hide cost from normal users, but if admin or sale let them see cost
         fields = ["name", "desc", "sku", "tags", "cost", "price", "quantity", "discount", "images", "category"]
 
     def create(self, validated_data):
@@ -295,3 +296,25 @@ class PaymentDetailsSerializer(serializers.ModelSerializer):
         # User perms
         assign_perm('view_paymentdetails', owner, paymentdetails)
         return paymentdetails
+
+
+class BlogPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlogPost
+        fields = '__all__'
+
+    def create(self, validated_data):
+
+        # check if user is appart of sales
+        group = Group.objects.get(name="sale")
+        user = self.context['request'].user
+        if not user.groups.filter(name='sale').exists():
+            raise PermissionDenied("You don't have permission to create a product.")
+
+        # creates orderItems
+        created_blog_post = BlogPost.objects.create(**validated_data)
+
+        # Group perms
+        assign_perm('edit_orderitems', group, created_blog_post)
+
+        return created_blog_post
