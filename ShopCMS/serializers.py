@@ -11,7 +11,7 @@ from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, Image,
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'is_staff', 'subscribed_newsletter']
+        fields = ["username", "email"]
 
 
 
@@ -60,12 +60,12 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductDetailedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        # TODO: hide cost from normal users, but if admin or sale let them see cost
-        fields = ["name", "desc", "sku", "tags", "cost", "price", "quantity", "discount", "images", "category"]
+        fields = '__all__'
+
 
     def create(self, validated_data):
 
@@ -91,9 +91,20 @@ class ProductSerializer(serializers.ModelSerializer):
         assign_perm('delete_product', group, product)
         return product
 
+class ImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Image
+        fields = '__all__'
+
+class ProductUserSerializer(serializers.ModelSerializer):
+    image = ImageSerializer(many=True, read_only=True)
+    class Meta:
+        model = Product
+        fields = ["name", "desc", "sku", "tag", "price", "quantity", "discount", "image", "category"]
 
 class ProductCategorySerializer(serializers.ModelSerializer):
-    products = ProductSerializer(many=True)
+    products = ProductUserSerializer(many=True)
 
     class Meta:
         model = ProductCategory
@@ -102,9 +113,9 @@ class ProductCategorySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         # check if user is appart of sales
-        group = Group.objects.get(name="sale")
+        group = Group.objects.get(name="Sale")
         user = self.context['request'].user
-        if not user.groups.filter(name='sale').exists():
+        if not user.groups.filter(name='Sale').exists():
             raise PermissionDenied("You don't have permission to create a product.")
 
         # creates catagory
@@ -116,10 +127,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         return productCategory
 
 
-class ImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Image
-        fields = '__all__'
+
 
     def create(self, validated_data):
 
@@ -219,6 +227,14 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderDetails
         fields = '__all__'
+
+    def get_permissions(self):
+        user = self.context['request'].user
+        obj = self.instance
+
+        # Check if the user has the required permission to view the object
+        if user.has_perm('ShopCMS_view_paymentDetails', obj):
+            raise PermissionDenied("You do not have permission to view this product.")
 
     def create(self, validated_data):
 
