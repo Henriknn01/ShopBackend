@@ -231,8 +231,6 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
     def get_permissions(self):
         user = self.context['request'].user
         obj = self.instance
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        print(user.get_user_permissions())
 
         # Check if the user has the required permission to view the object
         if user.has_perm('ShopCMS_view_paymentDetails', obj):
