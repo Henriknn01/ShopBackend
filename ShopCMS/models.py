@@ -177,7 +177,7 @@ class PaymentDetails(models.Model):
     order = models.OneToOneField(OrderDetails, on_delete=models.PROTECT)
     amount = models.FloatField()
     provider = models.CharField(max_length=256, null=False, default="Unknown")
-    status = model.CharField(max_length=256, default="Processing")
+    status = models.CharField(max_length=256, default="Processing")
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -188,7 +188,7 @@ class PaymentDetails(models.Model):
 #  https://www.tiny.cloud/
 class BlogPost(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    banner_image = models.ForeignKey(Image)
+    banner_image = models.ForeignKey(Image, on_delete=models.CASCADE)
     title = models.CharField(max_length=256, null=False)
     short_content_display = models.TextField()
     content = models.TextField(max_length=1024, null=False)
