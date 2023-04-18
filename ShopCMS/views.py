@@ -1,3 +1,4 @@
+from guardian.shortcuts import get_objects_for_user
 from requests import Response
 from rest_framework import viewsets, permissions
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -7,8 +8,8 @@ from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, Image,
     WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails
 from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCategorySerializer, \
     OrderDetailsSerializer, OrderItemsSerializer, PaymentDetailsSerializer, \
-    ProductSerializer, TagSerializer, ImageSerializer, ProductListSerializer, WishListSerializer, \
-    ProductReviewSerializer, OrderShippingDetailsSerializer
+    TagSerializer, ImageSerializer, ProductListSerializer, WishListSerializer, \
+    ProductReviewSerializer, OrderShippingDetailsSerializer, ProductUserSerializer, ProductDetailedSerializer
 from functools import wraps
 import jwt
 from django.http import JsonResponse, HttpResponse
@@ -23,8 +24,19 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
+    def get_queryset(self):
+        queryset = OrderDetails.objects.all()
+        user = self.request.user
+        return get_objects_for_user(user, "view_user", queryset)
 
-
+    def get_serializer_class(self): #TODO fixthis make it so user can see only user name and stuff, but can see they own user account
+        user = self.request.user
+        if "ShopCMS.view_user" not in user.get_group_permissions():
+            return UserSerializer
+        elif "ShopCMS.view_product" in user.get_group_permissions():
+            return UserSerializer
+        else:
+            return super().get_serializer_class()
 
 
 
@@ -56,10 +68,20 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductUserSerializer
+
 
     def perform_create(self, serializer):
         serializer.save()
+
+    def get_serializer_class(self):
+        user = self.request.user
+        if "ShopCMS.view_product" not in user.get_group_permissions():
+            return ProductUserSerializer
+        elif "ShopCMS.view_product" in user.get_group_permissions():
+            return ProductDetailedSerializer
+        else:
+            return super().get_serializer_class()
 
 
 class ImageViewSet(viewsets.ModelViewSet):
@@ -103,6 +125,11 @@ class OrderDetailsViewSet(viewsets.ModelViewSet):
     serializer_class = OrderDetailsSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        queryset = OrderDetails.objects.all()
+        user = self.request.user
+        return get_objects_for_user(user, "view_orderdetails", queryset)
+
 
     def perform_create(self, serializer):
         serializer.save()
@@ -113,6 +140,10 @@ class OrderItemsViewSet(viewsets.ModelViewSet):
     serializer_class = OrderItemsSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        queryset = OrderDetails.objects.all()
+        user = self.request.user
+        return get_objects_for_user(user, "view_orderitems", queryset)
 
     def perform_create(self, serializer):
         serializer.save()
@@ -123,6 +154,11 @@ class OrderShippingDetailsViewSet(viewsets.ModelViewSet):
     serializer_class = OrderShippingDetailsSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        queryset = OrderDetails.objects.all()
+        user = self.request.user
+        return get_objects_for_user(user, "view_ordershippingdetails", queryset)
+
 
     def perform_create(self, serializer):
         serializer.save()
@@ -132,6 +168,11 @@ class PaymentDetailsViewSet(viewsets.ModelViewSet):
     queryset = PaymentDetails.objects.all()
     serializer_class = PaymentDetailsSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = OrderDetails.objects.all()
+        user = self.request.user
+        return get_objects_for_user(user, "view_paymentdetails", queryset)
 
 
     def perform_create(self, serializer):
