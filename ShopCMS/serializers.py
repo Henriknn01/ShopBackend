@@ -108,7 +108,9 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductCategory
-        fields = ["id", "name", "products"]
+        fields = ["id", "name", "parent_category", "products"]
+
+
 
     def create(self, validated_data):
 

@@ -1,6 +1,7 @@
 from guardian.shortcuts import get_objects_for_user
 from requests import Response
 from rest_framework import viewsets, permissions
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.renderers import JSONRenderer
 
@@ -65,6 +66,12 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
+    @action(detail=True, methods=['get'])
+    def subcategories(self, request, pk=None):
+        parent_category = self.get_object()
+        sub_categories = parent_category.sub_categories.all()
+        serializer = self.get_serializer(sub_categories, many=True)
+        return Response(serializer)
 
 
 class ProductViewSet(viewsets.ModelViewSet):
