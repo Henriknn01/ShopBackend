@@ -110,6 +110,10 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         model = ProductCategory
         fields = ["id", "name", "parent_category", "products"]
 
+    def get_sub_categories(self, obj):
+        subcategories = ProductCategory.get_all_subcategories(obj)
+        serializer = self.__class__(subcategories, many=True)
+        return serializer.data
 
 
     def create(self, validated_data):

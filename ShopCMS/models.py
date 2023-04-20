@@ -64,6 +64,13 @@ class ProductCategory(models.Model):
     def __str__(self):
         return f"{self.name}-{self.id}"
 
+    def get_all_subcategories(self):
+        subcategories = []
+        for sub_category in self.sub_categories.all():
+            subcategories.append(sub_category.id)
+            subcategories.extend(sub_category.get_all_subcategories())
+        return subcategories
+
 class Image(models.Model):
     src = models.CharField(max_length=512)
     alt = models.CharField(max_length=256)

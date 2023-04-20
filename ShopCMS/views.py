@@ -1,3 +1,5 @@
+import json
+
 from guardian.shortcuts import get_objects_for_user
 from requests import Response
 from rest_framework import viewsets, permissions
@@ -68,10 +70,11 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def subcategories(self, request, pk=None):
-        parent_category = self.get_object()
-        sub_categories = parent_category.sub_categories.all()
-        serializer = self.get_serializer(sub_categories, many=True)
-        return Response(serializer)
+        category = ProductCategory.objects.get(id=request.get_full_path().split("/")[2])
+        subcategories = category.get_all_subcategories()
+        jsondump = {"subcatagories": subcategories}
+        print(jsondump)
+        return JsonResponse(jsondump)
 
 
 class ProductViewSet(viewsets.ModelViewSet):
