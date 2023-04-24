@@ -178,6 +178,13 @@ class ProductListSerializer(serializers.ModelSerializer):
         assign_perm('delete_productlist', group, productlist)
         return productlist
 
+    def get_featured_lists(self):
+        """
+        Retrieves the featured product lists from the database
+        """
+        featured_lists = ProductList.objects.filter(featured=True)
+        serializer = self.__class__(featured_lists, many=True)
+        return serializer.data
 
 class WishListSerializer(serializers.ModelSerializer):
     class Meta:

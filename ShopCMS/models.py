@@ -108,9 +108,20 @@ class Product(models.Model):
 class ProductList(models.Model):
     name = models.CharField(max_length=256)
     slug = models.CharField(max_length=256)
+    featured = models.BooleanField(default=False, null=True)
+    tag = models.ManyToManyField(Tag, blank=True)
+    image = models.ManyToManyField(Image, related_name="ListImages", blank=True)
     products = models.ManyToManyField(Product)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    def featured_lists(self, tagid):
+        get_tag = Tag.objects.get(id=tagid)
+        """
+        Retrieves the featured product lists from the database
+        """
+        featured_lists = self.filter(featured=True, tag=get_tag)
+        return featured_lists
+
 
     def __str__(self):
         return self.name
