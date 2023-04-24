@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from ShopCMS.managers import UserAccountManager
 
 class User(AbstractUser):
+    username = None
     email = models.EmailField(_('email address'), unique=True)
     subscribed_newsletter = models.BooleanField(default=False)
 
