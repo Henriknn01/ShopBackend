@@ -19,6 +19,6 @@ class ShopCMSTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['first_name'] = user.first_name
         token['last_name'] = user.last_name
         token['email'] = user.email
-        token['role'] = user.groups.first()
+        token['role'] = user.groups.first().name
 
         return token
