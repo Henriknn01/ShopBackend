@@ -6,6 +6,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.renderers import JSONRenderer
+import json
 
 from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, Image, ProductList, \
     WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails, BlogPost
@@ -68,105 +69,6 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
-    def subcategories(self, catagoryNumber):
-        category = ProductCategory.objects.get(id=catagoryNumber)
-        subcategories = category.get_all_subcategories()
-        return subcategories
-
-    def get_catagory_name(self, catagoryNumber):
-        return ProductCategory.objects.get(id=catagoryNumber).name
-
-
-
-    @action(detail=True, methods=['get'])
-    def get_sections(self, request, pk=None):
-
-        sendback = {
-            "catSection": {
-                "featuredCollection": [],
-                "sections": [
-                    {
-                        "catagoryNumber": 4,
-                        "id": "allcats",
-                        "Name": "For all cats",
-                        "items": []
-                    },
-                    {
-                        "catagoryNumber": 5,
-                        "id": "OutdoorCat",
-                        "Name": "OutdoorCat",
-                        "items": []
-                    },
-                    {
-                        "catagoryNumber": 6,
-                        "id": "brands",
-                        "Name": "Brands",
-                        "items": []
-                    }
-                ]
-            },
-            "dogSection": {
-                "featuredCollection": [],
-                "sections": [
-                    {
-                        "catagoryNumber": 7,
-                        "id": "alldogs",
-                        "Name": "For all dogs",
-                        "items": []
-                    },
-                    {
-                        "catagoryNumber": 8,
-                        "id": "Doghealth",
-                        "Name": "DogHealth",
-                        "items": []
-                    },
-                    {
-                        "catagoryNumber": 9,
-                        "id": "brands",
-                        "Name": "Brands",
-                        "items": []
-                    }
-                ]
-            },
-            "miscSection": {
-                "featuredCollection": [],
-                "sections": [
-                    {
-                        "catagoryNumber": 29,
-                        "id": "birds",
-                        "Name": "Birds",
-                        "items": []
-                    },
-                    {
-                        "catagoryNumber": 30,
-                        "id": "Reptiles",
-                        "Name": "Reptiles",
-                        "items": []
-                    },
-                    {
-                        "catagoryNumber": 31,
-                        "id": "brands",
-                        "Name": "Brands",
-                        "items": []
-                    }
-                ]
-            }
-        }
-
-        for section_name in ["catSection", "dogSection", "miscSection"]:
-
-            sendback[section_name]["featuredCollection"] = []
-
-        for section_name in ["catSection", "dogSection", "miscSection"]:
-            i = 0
-            for sections in sendback[section_name]["sections"]:
-                subcats = self.subcategories(sections["catagoryNumber"])
-                itemsArray = []
-                for CatNumber in subcats:
-                    itemsArray.append({ "name": self.get_catagory_name(CatNumber), "href": f"/categories/{CatNumber}"})
-                sendback[section_name]["sections"][i]["items"] = itemsArray
-                i = i + 1
-        return JsonResponse(sendback)
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
@@ -202,36 +104,22 @@ class ProductListViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
-    def featured_list(self, tag_id):
-        featuredlist = ProductList.featured_lists(ProductList.objects, tag_id)
+    def featured_list(self):
+        featuredlist = ProductList.featured_lists(ProductList.objects)
         return featuredlist
 
     @action(detail=True, methods=['get'])
     def get_featured_list(self, request, pk=None):
-
-        sendback = {
-            "catSection": {
-                "tag_id":1 ,
-                "featuredCollection": []
-            },
-            "dogSection": {
-                "tag_id":2,
-                "featuredCollection": []
-            },
-            "miscSection": {
-                "tag_id":3,
-                "featuredCollection": []
-            }
-        }
-
-        for section_name in ["catSection", "dogSection", "miscSection"]:
-            setArray = []
-            featuredCollections = self.featured_list(sendback[section_name]["tag_id"])
-            for prod_list in featuredCollections:
-                setArray.append({"name": prod_list.name, "href": prod_list.id, "imageSrc": prod_list.image.first().src, "imageAlt": prod_list.image.first().alt})
-            sendback[section_name]["featuredCollection"] = setArray
-        print(sendback)
-        return JsonResponse(sendback)
+        setArray = []
+        featuredCollections = self.featured_list()
+        for prod_list in featuredCollections:
+            setArray.append({
+                "name": prod_list.name,
+                "href": prod_list.id,
+                "imageSrc": prod_list.image.first().src,
+                "imageAlt": prod_list.image.first().alt,
+                "category": prod_list.category.first().id})
+        return JsonResponse(setArray, safe=False)
 
 
 
