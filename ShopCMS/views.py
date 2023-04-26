@@ -1,5 +1,6 @@
 import json
 
+from django_filters.rest_framework import DjangoFilterBackend
 from guardian.shortcuts import get_objects_for_user
 from requests import Response
 from rest_framework import viewsets, permissions
@@ -17,6 +18,7 @@ from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCateg
 from functools import wraps
 import jwt
 from django.http import JsonResponse, HttpResponse
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 
 
@@ -171,7 +173,11 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductUserSerializer
-
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'name', 'category', 'sku', 'tag', 'price', 'discount', 'quantity', 'deleted_at']
+    search_fields = ['=name']
+    ordering_fields = ['name', 'id', 'category', 'tag', 'price']
+    ordering = ['id']
 
     def perform_create(self, serializer):
         serializer.save()
