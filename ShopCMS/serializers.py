@@ -104,16 +104,11 @@ class ProductUserSerializer(serializers.ModelSerializer):
         fields = ["name", "desc", "sku", "tag", "price", "quantity", "discount", "image", "category"]
 
 class ProductCategorySerializer(serializers.ModelSerializer):
-    products = ProductUserSerializer(many=True)
 
     class Meta:
         model = ProductCategory
-        fields = ["id", "name", "parent_category", "products"]
+        fields = ["id", "name", "parent_category"]
 
-    def get_sub_categories(self, obj):
-        subcategories = ProductCategory.get_all_subcategories(obj)
-        serializer = self.__class__(subcategories, many=True)
-        return serializer.data
 
 
     def create(self, validated_data):
@@ -178,13 +173,7 @@ class ProductListSerializer(serializers.ModelSerializer):
         assign_perm('delete_productlist', group, productlist)
         return productlist
 
-    def get_featured_lists(self):
-        """
-        Retrieves the featured product lists from the database
-        """
-        featured_lists = ProductList.objects.filter(featured=True)
-        serializer = self.__class__(featured_lists, many=True)
-        return serializer.data
+
 
 class WishListSerializer(serializers.ModelSerializer):
     class Meta:
