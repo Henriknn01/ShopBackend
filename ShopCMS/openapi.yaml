@@ -1,0 +1,9 @@
+openapi: 3.0.3
+info:
+  title: Open API Specification for PetShop
+  description: Title
+  version: 3.0.0
+servers:
+  - url: 'https'
+paths:
+  /
