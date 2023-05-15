@@ -1,9 +1,33 @@
 openapi: 3.0.3
+
 info:
   title: Open API Specification for PetShop
-  description: Title
   version: 3.0.0
+
+externalDocs:
+  description: Link to git repo
+  url: https://github.com/Henriknn01/ShopBackend
+
+
 servers:
-  - url: 'https'
+  - url: http://127.0.0.1:8000/api
+
+tags: -Products
 paths:
-  /
+  /products:
+    summary: products in the store
+    get:
+    tags:
+      - Products
+      - summary: Get all products as list
+        responses:
+        200:
+          description: Success
+        400:
+          description: Incorrect input
+        default:
+          description: Success
+
+  /api/products/{id}:
+    summary:
+    get:
