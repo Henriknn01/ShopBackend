@@ -30,6 +30,12 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'email', 'subscribed_newsletter']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
+
     def get_queryset(self):
         queryset = OrderDetails.objects.all()
         user = self.request.user
@@ -49,6 +55,11 @@ class UserViewSet(viewsets.ModelViewSet):
 class DiscountViewSet(viewsets.ModelViewSet):
     queryset = Discount.objects.all()
     serializer_class = DiscountSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'name', 'desc', 'discount_price', 'active', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def perform_create(self, serializer):
         serializer.save()
@@ -58,6 +69,11 @@ class DiscountViewSet(viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'name', 'description', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def perform_create(self, serializer):
         serializer.save()
@@ -66,109 +82,15 @@ class TagViewSet(viewsets.ModelViewSet):
 class ProductCategoryViewSet(viewsets.ModelViewSet):
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'parent_category', 'name', 'desc', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
+
 
     def perform_create(self, serializer):
         serializer.save()
-
-    def subcategories(self, catagoryNumber):
-        category = ProductCategory.objects.get(id=catagoryNumber)
-        subcategories = category.get_all_subcategories()
-        return subcategories
-
-    def get_catagory_name(self, catagoryNumber):
-        return ProductCategory.objects.get(id=catagoryNumber).name
-
-
-
-    @action(detail=True, methods=['get'])
-    def get_sections(self, request, pk=None):
-
-        sendback = {
-            "catSection": {
-                "featuredCollection": [],
-                "sections": [
-                    {
-                        "catagoryNumber": 4,
-                        "id": "allcats",
-                        "Name": "For all cats",
-                        "items": []
-                    },
-                    {
-                        "catagoryNumber": 5,
-                        "id": "OutdoorCat",
-                        "Name": "OutdoorCat",
-                        "items": []
-                    },
-                    {
-                        "catagoryNumber": 6,
-                        "id": "brands",
-                        "Name": "Brands",
-                        "items": []
-                    }
-                ]
-            },
-            "dogSection": {
-                "featuredCollection": [],
-                "sections": [
-                    {
-                        "catagoryNumber": 7,
-                        "id": "alldogs",
-                        "Name": "For all dogs",
-                        "items": []
-                    },
-                    {
-                        "catagoryNumber": 8,
-                        "id": "Doghealth",
-                        "Name": "DogHealth",
-                        "items": []
-                    },
-                    {
-                        "catagoryNumber": 9,
-                        "id": "brands",
-                        "Name": "Brands",
-                        "items": []
-                    }
-                ]
-            },
-            "miscSection": {
-                "featuredCollection": [],
-                "sections": [
-                    {
-                        "catagoryNumber": 29,
-                        "id": "birds",
-                        "Name": "Birds",
-                        "items": []
-                    },
-                    {
-                        "catagoryNumber": 30,
-                        "id": "Reptiles",
-                        "Name": "Reptiles",
-                        "items": []
-                    },
-                    {
-                        "catagoryNumber": 31,
-                        "id": "brands",
-                        "Name": "Brands",
-                        "items": []
-                    }
-                ]
-            }
-        }
-
-        for section_name in ["catSection", "dogSection", "miscSection"]:
-
-            sendback[section_name]["featuredCollection"] = []
-
-        for section_name in ["catSection", "dogSection", "miscSection"]:
-            i = 0
-            for sections in sendback[section_name]["sections"]:
-                subcats = self.subcategories(sections["catagoryNumber"])
-                itemsArray = []
-                for CatNumber in subcats:
-                    itemsArray.append({ "name": self.get_catagory_name(CatNumber), "href": f"/categories/{CatNumber}"})
-                sendback[section_name]["sections"][i]["items"] = itemsArray
-                i = i + 1
-        return JsonResponse(sendback)
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
@@ -195,6 +117,11 @@ class ProductViewSet(viewsets.ModelViewSet):
 class ImageViewSet(viewsets.ModelViewSet):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def perform_create(self, serializer):
         serializer.save()
@@ -204,47 +131,27 @@ class ImageViewSet(viewsets.ModelViewSet):
 class ProductListViewSet(viewsets.ModelViewSet):
     queryset = ProductList.objects.all()
     serializer_class = ProductListSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'name', 'slug', 'featured', 'tag', 'image', 'products', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
+
 
     def perform_create(self, serializer):
         serializer.save()
 
-    def featured_list(self, tag_id):
-        featuredlist = ProductList.featured_lists(ProductList.objects, tag_id)
-        return featuredlist
-
-    @action(detail=True, methods=['get'])
-    def get_featured_list(self, request, pk=None):
-
-        sendback = {
-            "catSection": {
-                "tag_id":1 ,
-                "featuredCollection": []
-            },
-            "dogSection": {
-                "tag_id":2,
-                "featuredCollection": []
-            },
-            "miscSection": {
-                "tag_id":3,
-                "featuredCollection": []
-            }
-        }
-
-        for section_name in ["catSection", "dogSection", "miscSection"]:
-            setArray = []
-            featuredCollections = self.featured_list(sendback[section_name]["tag_id"])
-            for prod_list in featuredCollections:
-                setArray.append({"name": prod_list.name, "href": prod_list.id, "imageSrc": prod_list.image.first().src, "imageAlt": prod_list.image.first().alt})
-            sendback[section_name]["featuredCollection"] = setArray
-        print(sendback)
-        return JsonResponse(sendback)
 
 
 
 class WishListViewSet(viewsets.ModelViewSet):
     queryset = WishList.objects.all()
     serializer_class = WishListSerializer
-
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'user', 'slug', 'products', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def perform_create(self, serializer):
         serializer.save()
@@ -253,6 +160,11 @@ class WishListViewSet(viewsets.ModelViewSet):
 class ProductReviewViewSet(viewsets.ModelViewSet):
     queryset = ProductReview.objects.all()
     serializer_class = ProductReviewSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'author', 'content', 'rating', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
 
     def perform_create(self, serializer):
@@ -263,6 +175,11 @@ class OrderDetailsViewSet(viewsets.ModelViewSet):
     queryset = OrderDetails.objects.all()
     serializer_class = OrderDetailsSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'user', 'total', 'voided', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def get_queryset(self):
         queryset = OrderDetails.objects.all()
@@ -278,6 +195,11 @@ class OrderItemsViewSet(viewsets.ModelViewSet):
     queryset = OrderItems.objects.all()
     serializer_class = OrderItemsSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'order', 'product', 'quantity', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def get_queryset(self):
         queryset = OrderDetails.objects.all()
@@ -292,6 +214,11 @@ class OrderShippingDetailsViewSet(viewsets.ModelViewSet):
     queryset = OrderShippingDetails.objects.all()
     serializer_class = OrderShippingDetailsSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'order', 'full_name', 'address', 'city', 'country', 'region', 'postal_code', 'phone_number','created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def get_queryset(self):
         queryset = OrderDetails.objects.all()
@@ -307,6 +234,11 @@ class PaymentDetailsViewSet(viewsets.ModelViewSet):
     queryset = PaymentDetails.objects.all()
     serializer_class = PaymentDetailsSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'order', 'amount', 'provider', 'status', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def get_queryset(self):
         queryset = OrderDetails.objects.all()
@@ -320,6 +252,11 @@ class PaymentDetailsViewSet(viewsets.ModelViewSet):
 class BlogPostViewSet(viewsets.ModelViewSet):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'author', 'banner_image', 'title', 'short_content_display', 'content', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def perform_create(self, serializer):
         serializer.save()

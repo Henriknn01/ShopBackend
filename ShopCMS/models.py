@@ -115,13 +115,6 @@ class ProductList(models.Model):
     products = models.ManyToManyField(Product)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    def featured_lists(self, tagid):
-        get_tag = Tag.objects.get(id=tagid)
-        """
-        Retrieves the featured product lists from the database
-        """
-        featured_lists = self.filter(featured=True, tag=get_tag)
-        return featured_lists
 
 
     def __str__(self):
