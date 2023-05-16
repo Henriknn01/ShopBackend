@@ -156,9 +156,10 @@ ACCOUNT_SERIALIZER = 'ShopCMS.djoserSerializers.UserCreateSerializer'
 PRODUCTION = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'support@norheimweb.com'
 
 if PRODUCTION:
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
