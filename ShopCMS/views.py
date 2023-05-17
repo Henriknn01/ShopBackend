@@ -132,7 +132,7 @@ class ProductListViewSet(viewsets.ModelViewSet):
     queryset = ProductList.objects.all()
     serializer_class = ProductListSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['id', 'name', 'slug', 'featured', 'tag', 'image', 'products', 'created_at', 'modified_at']
+    filterset_fields = ['id', 'name', 'slug', 'featured', 'category', 'image', 'products', 'created_at', 'modified_at']
     search_fields = ['=id']
     ordering_fields = ['id']
     ordering = ['id']

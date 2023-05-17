@@ -110,7 +110,7 @@ class ProductList(models.Model):
     name = models.CharField(max_length=256)
     slug = models.CharField(max_length=256)
     featured = models.BooleanField(default=False, null=True)
-    tag = models.ManyToManyField(Tag, blank=True)
+    category = models.ManyToManyField(ProductCategory, blank=True)
     image = models.ManyToManyField(Image, related_name="ListImages", blank=True)
     products = models.ManyToManyField(Product)
     created_at = models.DateTimeField(auto_now_add=True)
