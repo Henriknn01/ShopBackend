@@ -111,14 +111,6 @@ class ProductList(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
-    def featured_lists(self):
-        """
-        Retrieves the featured product lists from the database
-        """
-        featured_lists = self.filter(featured=True)
-        return featured_lists
-
-
     def __str__(self):
         return self.name
 

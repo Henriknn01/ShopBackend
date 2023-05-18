@@ -1,5 +1,6 @@
 import json
 
+from django_filters.rest_framework import DjangoFilterBackend
 from guardian.shortcuts import get_objects_for_user
 from requests import Response
 from rest_framework import viewsets, permissions
@@ -18,6 +19,7 @@ from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCateg
 from functools import wraps
 import jwt
 from django.http import JsonResponse, HttpResponse
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 
 
@@ -29,6 +31,12 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'email', 'subscribed_newsletter']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
+
     def get_queryset(self):
         queryset = OrderDetails.objects.all()
         user = self.request.user
@@ -48,6 +56,11 @@ class UserViewSet(viewsets.ModelViewSet):
 class DiscountViewSet(viewsets.ModelViewSet):
     queryset = Discount.objects.all()
     serializer_class = DiscountSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'name', 'desc', 'discount_price', 'active', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def perform_create(self, serializer):
         serializer.save()
@@ -57,6 +70,11 @@ class DiscountViewSet(viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'name', 'description', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def perform_create(self, serializer):
         serializer.save()
@@ -65,6 +83,12 @@ class TagViewSet(viewsets.ModelViewSet):
 class ProductCategoryViewSet(viewsets.ModelViewSet):
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'parent_category', 'name', 'desc', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
+
 
     def perform_create(self, serializer):
         serializer.save()
@@ -73,7 +97,11 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductUserSerializer
-
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'name', 'category', 'sku', 'tag', 'price', 'discount', 'quantity', 'deleted_at']
+    search_fields = ['=name']
+    ordering_fields = ['name', 'id', 'category', 'tag', 'price']
+    ordering = ['id']
 
     def perform_create(self, serializer):
         serializer.save()
@@ -91,6 +119,11 @@ class ProductViewSet(viewsets.ModelViewSet):
 class ImageViewSet(viewsets.ModelViewSet):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def perform_create(self, serializer):
         serializer.save()
@@ -100,33 +133,27 @@ class ImageViewSet(viewsets.ModelViewSet):
 class ProductListViewSet(viewsets.ModelViewSet):
     queryset = ProductList.objects.all()
     serializer_class = ProductListSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'name', 'slug', 'featured', 'category', 'image', 'products', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
+
 
     def perform_create(self, serializer):
         serializer.save()
 
-    def featured_list(self):
-        featuredlist = ProductList.featured_lists(ProductList.objects)
-        return featuredlist
-
-    @action(detail=True, methods=['get'])
-    def get_featured_list(self, request, pk=None):
-        setArray = []
-        featuredCollections = self.featured_list()
-        for prod_list in featuredCollections:
-            setArray.append({
-                "name": prod_list.name,
-                "href": prod_list.id,
-                "imageSrc": prod_list.image.first().src,
-                "imageAlt": prod_list.image.first().alt,
-                "category": prod_list.category.first().id})
-        return JsonResponse(setArray, safe=False)
 
 
 
 class WishListViewSet(viewsets.ModelViewSet):
     queryset = WishList.objects.all()
     serializer_class = WishListSerializer
-
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'user', 'slug', 'products', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def perform_create(self, serializer):
         serializer.save()
@@ -135,6 +162,11 @@ class WishListViewSet(viewsets.ModelViewSet):
 class ProductReviewViewSet(viewsets.ModelViewSet):
     queryset = ProductReview.objects.all()
     serializer_class = ProductReviewSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'author', 'content', 'rating', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
 
     def perform_create(self, serializer):
@@ -145,6 +177,11 @@ class OrderDetailsViewSet(viewsets.ModelViewSet):
     queryset = OrderDetails.objects.all()
     serializer_class = OrderDetailsSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'user', 'total', 'voided', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def get_queryset(self):
         queryset = OrderDetails.objects.all()
@@ -160,6 +197,11 @@ class OrderItemsViewSet(viewsets.ModelViewSet):
     queryset = OrderItems.objects.all()
     serializer_class = OrderItemsSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'order', 'product', 'quantity', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def get_queryset(self):
         queryset = OrderDetails.objects.all()
@@ -174,6 +216,11 @@ class OrderShippingDetailsViewSet(viewsets.ModelViewSet):
     queryset = OrderShippingDetails.objects.all()
     serializer_class = OrderShippingDetailsSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'order', 'full_name', 'address', 'city', 'country', 'region', 'postal_code', 'phone_number','created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def get_queryset(self):
         queryset = OrderDetails.objects.all()
@@ -189,6 +236,11 @@ class PaymentDetailsViewSet(viewsets.ModelViewSet):
     queryset = PaymentDetails.objects.all()
     serializer_class = PaymentDetailsSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'order', 'amount', 'provider', 'status', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def get_queryset(self):
         queryset = OrderDetails.objects.all()
@@ -202,6 +254,11 @@ class PaymentDetailsViewSet(viewsets.ModelViewSet):
 class BlogPostViewSet(viewsets.ModelViewSet):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'author', 'banner_image', 'title', 'short_content_display', 'content', 'created_at', 'modified_at']
+    search_fields = ['=id']
+    ordering_fields = ['id']
+    ordering = ['id']
 
     def perform_create(self, serializer):
         serializer.save()
