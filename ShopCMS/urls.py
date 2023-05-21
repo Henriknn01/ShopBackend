@@ -4,7 +4,7 @@ from rest_framework import routers
 
 from ShopCMS.views import UserViewSet, DiscountViewSet, ProductCategoryViewSet, ProductViewSet, \
     OrderDetailsViewSet, OrderItemsViewSet, PaymentDetailsViewSet, WishListViewSet, TagViewSet, ImageViewSet, \
-    ProductListViewSet, ProductReviewViewSet, OrderShippingDetailsViewSet
+    ProductListViewSet, ProductReviewViewSet, OrderShippingDetailsViewSet, BlogPostViewSet
 
 router = routers.DefaultRouter()
 
@@ -15,6 +15,7 @@ router.register('tag', TagViewSet, basename='tag')
 router.register('productcategory', ProductCategoryViewSet, basename='product-category')
 router.register('product', ProductViewSet, basename='product')
 router.register('Image', ImageViewSet, basename='image')
+router.register('blogpost', BlogPostViewSet, basename='blogpost')
 router.register('productlist', ProductListViewSet, basename='product-list')
 router.register('wishlist', WishListViewSet, basename='wishlist')
 router.register('productReview', ProductReviewViewSet, basename='product-review')

@@ -255,7 +255,7 @@ class BlogPostViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['id', 'author', 'banner_image', 'title', 'short_content_display', 'content', 'created_at', 'modified_at']
     search_fields = ['=id']
-    ordering_fields = ['id']
+    ordering_fields = ['id', 'created_at']
     ordering = ['id']
 
     def perform_create(self, serializer):
