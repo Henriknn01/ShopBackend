@@ -65,12 +65,7 @@ class ProductCategory(models.Model):
     def __str__(self):
         return f"{self.name}-{self.id}"
 
-    def get_all_subcategories(self):
-        subcategories = []
-        for sub_category in self.sub_categories.all():
-            subcategories.append(sub_category.id)
-            subcategories.extend(sub_category.get_all_subcategories())
-        return subcategories
+
 
 class Image(models.Model):
     src = models.CharField(max_length=512)
@@ -110,12 +105,11 @@ class ProductList(models.Model):
     name = models.CharField(max_length=256)
     slug = models.CharField(max_length=256)
     featured = models.BooleanField(default=False, null=True)
-    category = models.ManyToManyField(ProductCategory, blank=True)
+    category = models.ManyToManyField(ProductCategory, related_name="Listcategory", blank=True)
     image = models.ManyToManyField(Image, related_name="ListImages", blank=True)
     products = models.ManyToManyField(Product)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-
 
     def __str__(self):
         return self.name
