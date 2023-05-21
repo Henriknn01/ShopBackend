@@ -32,7 +32,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['id', 'email', 'subscribed_newsletter']
+    filterset_fields = ['id']
     search_fields = ['=id']
     ordering_fields = ['id']
     ordering = ['id']

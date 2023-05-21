@@ -14,6 +14,11 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["username", "email"]
 
 
+class ImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Image
+        fields = '__all__'
 
 class DiscountSerializer(serializers.ModelSerializer):
     class Meta:
@@ -58,11 +63,6 @@ class TagSerializer(serializers.ModelSerializer):
         assign_perm('delete_tag', group, tag)
         return tag
 
-class ImageSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Image
-        fields = '__all__'
 
 
 class ProductDetailedSerializer(serializers.ModelSerializer):
@@ -106,10 +106,10 @@ class ProductUserSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "desc", "sku", "tag", "price", "quantity", "discount", "image", "category"]
 
 class ProductCategorySerializer(serializers.ModelSerializer):
-
+    image = ImageSerializer(read_only=True)
     class Meta:
         model = ProductCategory
-        fields = ["id", "name", "parent_category"]
+        fields = ["id", "name", "desc", "image", "parent_category"]
 
 
 
