@@ -58,13 +58,20 @@ class TagSerializer(serializers.ModelSerializer):
         assign_perm('delete_tag', group, tag)
         return tag
 
+class ImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Image
+        fields = '__all__'
 
 
 class ProductDetailedSerializer(serializers.ModelSerializer):
+    image = ImageSerializer(many=True)
 
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ["id", "name", "desc", "sku", "category", "tag", "cost", "price", "quantity", "discount",
+                  "image", "created_at", "modified_at", "deleted_at"]
 
 
     def create(self, validated_data):
@@ -91,11 +98,6 @@ class ProductDetailedSerializer(serializers.ModelSerializer):
         assign_perm('delete_product', group, product)
         return product
 
-class ImageSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Image
-        fields = '__all__'
 
 class ProductUserSerializer(serializers.ModelSerializer):
     image = ImageSerializer(many=True, read_only=True)
