@@ -40,7 +40,14 @@ class Discount(models.Model):
     """
     Model representing a discount with a name, description, discount price, active status, and timestamp fields.
     """
+class Image(models.Model):
+    src = models.CharField(max_length=512)
+    alt = models.CharField(max_length=256)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.src}-{self.id}"
 
 class Tag(models.Model):
     name = models.CharField(max_length=256)
@@ -58,6 +65,7 @@ class ProductCategory(models.Model):
                                         on_delete=models.SET_NULL)
     name = models.CharField(max_length=256, null=False, blank=False)
     desc = models.TextField(max_length=5000)
+    image = models.ForeignKey(Image, on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
@@ -67,14 +75,7 @@ class ProductCategory(models.Model):
 
 
 
-class Image(models.Model):
-    src = models.CharField(max_length=512)
-    alt = models.CharField(max_length=256)
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f"{self.src}-{self.id}"
 
 # this needs only perms on cost where we cant share what we buy them for
 class Product(models.Model):
