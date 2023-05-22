@@ -227,10 +227,72 @@ class ProductReviewSerializer(serializers.ModelSerializer):
         return productReview
 
 
+class OrderItemsSerializer(serializers.ModelSerializer):
+    ordered_product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    class Meta:
+        model = OrderItems
+        fields = ['id', "ordered_product", "quantity", 'created_at', 'modified_at']
+
+    def create(self, validated_data):
+        # gets owner of the orderitems
+        owner = self.context['request'].user
+        # get support group
+        group = Group.objects.get(name="support")
+
+        # creates orderItems
+        orderitems = OrderItems.objects.create(**validated_data)
+
+        # User perms
+        assign_perm('view_orderitems', owner, orderitems)
+        # Group perms
+        assign_perm('view_orderitems', group, orderitems)
+
+        return orderitems
+
+
+class OrderShippingDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderShippingDetails
+        fields = ["id", "full_name", "address", "city", "country", "region", "postal_code", "phone_number"]
+
+    def create(self, validated_data):
+
+        # gets owner of ordershipping
+        owner = self.context['request'].user
+        # gets group support
+        group = Group.objects.get(name="support")
+
+        # creates ordershipping
+        ordershippingdetails = OrderShippingDetails.objects.create(**validated_data)
+
+        # User perms
+        assign_perm('view_ordershippingdetails', owner, ordershippingdetails)
+        # Group perms
+        assign_perm('view_ordershippingdetails', group, ordershippingdetails)
+        return ordershippingdetails
+
+
+class PaymentDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentDetails
+        fields = ["amount", "provider", "status"]
+
+    def create(self, validated_data):
+        # gets owner of payment details
+        owner = self.context['request'].user
+
+        # creates payment details
+        paymentdetails = PaymentDetails.objects.create(**validated_data)
+
+        # User perms
+        assign_perm('view_paymentdetails', owner, paymentdetails)
+        return paymentdetails
+
+
 class OrderDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderDetails
-        fields = '__all__'
+        fields = ["user", "total", "voided", "paymentDetails", "Items", "ShippingDetails", "created_at", "modified_at"]
 
     def get_permissions(self):
         user = self.context['request'].user
@@ -255,67 +317,6 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
         # Group perms
         assign_perm('view_orderdetails', group, orderDetail)
         return orderDetail
-
-
-class OrderItemsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrderItems
-        fields = '__all__'
-
-    def create(self, validated_data):
-        # gets owner of the orderitems
-        owner = self.context['request'].user
-        # get support group
-        group = Group.objects.get(name="support")
-
-        # creates orderItems
-        orderitems = OrderItems.objects.create(**validated_data)
-
-        # User perms
-        assign_perm('view_orderitems', owner, orderitems)
-        # Group perms
-        assign_perm('view_orderitems', group, orderitems)
-
-        return orderitems
-
-
-class OrderShippingDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrderShippingDetails
-        fields = '__all__'
-
-    def create(self, validated_data):
-
-        # gets owner of ordershipping
-        owner = self.context['request'].user
-        # gets group support
-        group = Group.objects.get(name="support")
-
-        # creates ordershipping
-        ordershippingdetails = OrderShippingDetails.objects.create(**validated_data)
-
-        # User perms
-        assign_perm('view_ordershippingdetails', owner, ordershippingdetails)
-        # Group perms
-        assign_perm('view_ordershippingdetails', group, ordershippingdetails)
-        return ordershippingdetails
-
-
-class PaymentDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PaymentDetails
-        fields = '__all__'
-
-    def create(self, validated_data):
-        # gets owner of payment details
-        owner = self.context['request'].user
-
-        # creates payment details
-        paymentdetails = PaymentDetails.objects.create(**validated_data)
-
-        # User perms
-        assign_perm('view_paymentdetails', owner, paymentdetails)
-        return paymentdetails
 
 
 class BlogPostSerializer(serializers.ModelSerializer):
