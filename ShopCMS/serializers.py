@@ -231,7 +231,7 @@ class OrderItemsSerializer(serializers.ModelSerializer):
     ordered_product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
     class Meta:
         model = OrderItems
-        fields = ['id', "ordered_product", "quantity", 'created_at', 'modified_at']
+        fields = ['id', "order", "ordered_product", "quantity", 'created_at', 'modified_at']
 
     def create(self, validated_data):
         # gets owner of the orderitems
@@ -253,7 +253,7 @@ class OrderItemsSerializer(serializers.ModelSerializer):
 class OrderShippingDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderShippingDetails
-        fields = ["id", "full_name", "address", "city", "country", "region", "postal_code", "phone_number"]
+        fields = ["id", "order", "full_name", "address", "city", "country", "region", "postal_code", "phone_number"]
 
     def create(self, validated_data):
 
@@ -275,7 +275,7 @@ class OrderShippingDetailsSerializer(serializers.ModelSerializer):
 class PaymentDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentDetails
-        fields = ["amount", "provider", "status"]
+        fields = ["id", "order", "amount", "provider", "status"]
 
     def create(self, validated_data):
         # gets owner of payment details
@@ -292,7 +292,7 @@ class PaymentDetailsSerializer(serializers.ModelSerializer):
 class OrderDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderDetails
-        fields = ["user", "total", "voided", "paymentDetails", "Items", "ShippingDetails", "created_at", "modified_at"]
+        fields = ["user", "total", "voided", "created_at", "modified_at"]
 
     def get_permissions(self):
         user = self.context['request'].user

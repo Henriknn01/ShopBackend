@@ -143,7 +143,19 @@ class ProductReview(models.Model):
     def __str__(self):
         return f"{self.product.name}-{self.author.id}"
 
+class OrderDetails(models.Model):
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    total = models.FloatField()
+    voided = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.id}"
+
+
 class OrderItems(models.Model):
+    order = models.ForeignKey(OrderDetails, on_delete=models.PROTECT)
     ordered_product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="ordered_product")
     quantity = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -154,6 +166,7 @@ class OrderItems(models.Model):
 
 
 class OrderShippingDetails(models.Model):
+    order = models.ForeignKey(OrderDetails, on_delete=models.PROTECT)
     full_name = models.CharField(max_length=256)
     address = models.CharField(max_length=256)
     city = models.CharField(max_length=256)
@@ -166,6 +179,7 @@ class OrderShippingDetails(models.Model):
 
 # this needs per object
 class PaymentDetails(models.Model):
+    order = models.ForeignKey(OrderDetails, on_delete=models.PROTECT)
     amount = models.FloatField(default=0)
     provider = models.CharField(max_length=256, null=False, default="Unknown")
     status = models.CharField(max_length=256, default="Processing")
@@ -177,18 +191,6 @@ class PaymentDetails(models.Model):
 
 
 # this needs per object
-class OrderDetails(models.Model):
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
-    total = models.FloatField()
-    voided = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
-    paymentDetails = models.ForeignKey(PaymentDetails, on_delete=models.CASCADE, related_name='paymentDetails')
-    Items = models.ManyToManyField(OrderItems, related_name="items")
-    ShippingDetails = models.ForeignKey(OrderShippingDetails, on_delete=models.CASCADE, related_name="shipping")
-
-    def __str__(self):
-        return f"{self.id}"
 
 
 
