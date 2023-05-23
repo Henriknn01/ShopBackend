@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "guardian",
     'djoser',
     'django_filters',
+    'drf_yasg',
+
 ]
 
 AUTH_USER_MODEL = 'ShopCMS.User'
@@ -56,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.RemoteUserMiddleware',
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
 ]
 
 ROOT_URLCONF = "ShopBackend.urls"

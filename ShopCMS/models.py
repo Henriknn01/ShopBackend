@@ -143,8 +143,6 @@ class ProductReview(models.Model):
     def __str__(self):
         return f"{self.product.name}-{self.author.id}"
 
-
-# this needs per object
 class OrderDetails(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     total = models.FloatField()
@@ -178,17 +176,22 @@ class OrderShippingDetails(models.Model):
     phone_number = models.CharField(max_length=128)
 
 
+
 # this needs per object
 class PaymentDetails(models.Model):
-    order = models.OneToOneField(OrderDetails, on_delete=models.PROTECT)
-    amount = models.FloatField()
+    order = models.ForeignKey(OrderDetails, on_delete=models.PROTECT)
+    amount = models.FloatField(default=0)
     provider = models.CharField(max_length=256, null=False, default="Unknown")
     status = models.CharField(max_length=256, default="Processing")
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.order.id}: {self.status}"
+        return f"{self.id}: {self.status}"
+
+
+# this needs per object
+
 
 
 #  https://www.tiny.cloud/
