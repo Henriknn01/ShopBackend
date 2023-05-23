@@ -198,7 +198,7 @@ class OrderItemsViewSet(viewsets.ModelViewSet):
     serializer_class = OrderItemsSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['id', "order", "ordered_product", "quantity", 'created_at', 'modified_at']
+    filterset_fields = ['id', "order", "product", "quantity", 'created_at', 'modified_at']
     search_fields = ['=id']
     ordering_fields = ['id']
     ordering = ['id']

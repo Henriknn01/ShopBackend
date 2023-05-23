@@ -156,7 +156,7 @@ class OrderDetails(models.Model):
 
 class OrderItems(models.Model):
     order = models.ForeignKey(OrderDetails, on_delete=models.PROTECT)
-    ordered_product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="ordered_product")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)

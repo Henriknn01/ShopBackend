@@ -228,10 +228,10 @@ class ProductReviewSerializer(serializers.ModelSerializer):
 
 
 class OrderItemsSerializer(serializers.ModelSerializer):
-    ordered_product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
     class Meta:
         model = OrderItems
-        fields = ['id', "order", "ordered_product", "quantity", 'created_at', 'modified_at']
+        fields = ['id', "order", "product", "quantity", 'created_at', 'modified_at']
 
     def create(self, validated_data):
         # gets owner of the orderitems
