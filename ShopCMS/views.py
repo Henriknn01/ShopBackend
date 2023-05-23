@@ -163,7 +163,7 @@ class ProductReviewViewSet(viewsets.ModelViewSet):
     queryset = ProductReview.objects.all()
     serializer_class = ProductReviewSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['id', 'author', 'content', 'rating', 'created_at', 'modified_at']
+    filterset_fields = ['id', 'author', 'content', 'rating', 'created_at', 'modified_at', 'product']
     search_fields = ['=id']
     ordering_fields = ['id']
     ordering = ['id']

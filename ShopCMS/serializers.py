@@ -151,6 +151,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 
 
 class ProductListSerializer(serializers.ModelSerializer):
+    products = ProductUserSerializer(many=True, read_only=True)
     class Meta:
         model = ProductList
         fields = '__all__'
