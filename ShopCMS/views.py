@@ -198,13 +198,13 @@ class OrderItemsViewSet(viewsets.ModelViewSet):
     serializer_class = OrderItemsSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['id', 'created_at', 'modified_at']
+    filterset_fields = ['id', "ordered_product", "quantity", 'created_at', 'modified_at']
     search_fields = ['=id']
     ordering_fields = ['id']
     ordering = ['id']
 
     def get_queryset(self):
-        queryset = OrderDetails.objects.all()
+        queryset = OrderItems.objects.all()
         user = self.request.user
         return get_objects_for_user(user, "view_orderitems", queryset)
 
@@ -217,13 +217,13 @@ class OrderShippingDetailsViewSet(viewsets.ModelViewSet):
     serializer_class = OrderShippingDetailsSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['id', 'created_at', 'modified_at']
+    filterset_fields = ['id', "full_name", "address", "city", "country", "region", "postal_code", "phone_number"]
     search_fields = ['=id']
     ordering_fields = ['id']
     ordering = ['id']
 
     def get_queryset(self):
-        queryset = OrderDetails.objects.all()
+        queryset = OrderShippingDetails.objects.all()
         user = self.request.user
         return get_objects_for_user(user, "view_ordershippingdetails", queryset)
 
@@ -237,13 +237,13 @@ class PaymentDetailsViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentDetailsSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["id", "created_at", "modified_at"]
+    filterset_fields = ["id", "amount", "provider", "status", "created_at", "modified_at"]
     search_fields = ['=id']
     ordering_fields = ['id']
     ordering = ['id']
 
     def get_queryset(self):
-        queryset = OrderDetails.objects.all()
+        queryset = PaymentDetails.objects.all()
         user = self.request.user
         return get_objects_for_user(user, "view_paymentdetails", queryset)
 

@@ -163,6 +163,7 @@ class OrderShippingDetails(models.Model):
     phone_number = models.CharField(max_length=128)
 
 
+
 # this needs per object
 class PaymentDetails(models.Model):
     amount = models.FloatField(default=0)
