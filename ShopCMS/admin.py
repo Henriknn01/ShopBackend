@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Discount, ProductCategory, Product, OrderDetails, OrderItems, PaymentDetails, \
-    OrderShippingDetails, User, Tag, Image, ProductList, WishList, ProductReview, BlogPost
+from .models import Discount, ProductCategory, Product, OrderDetails, OrderItems, User, Tag, Image, ProductList, WishList, ProductReview, BlogPost
 from guardian.admin import GuardedModelAdmin
 # Register your models here.
 
@@ -24,6 +23,4 @@ admin.site.register(WishList, ShopCMSAdmin)
 admin.site.register(ProductReview, ShopCMSAdmin)
 admin.site.register(OrderDetails, ShopCMSAdmin)
 admin.site.register(OrderItems, ShopCMSAdmin)
-admin.site.register(OrderShippingDetails, ShopCMSAdmin)
-admin.site.register(PaymentDetails, ShopCMSAdmin)
 

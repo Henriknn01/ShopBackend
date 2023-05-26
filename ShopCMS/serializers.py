@@ -5,7 +5,7 @@ from rest_framework.exceptions import PermissionDenied
 
 import ShopCMS.views
 from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, Image, ProductList, \
-    WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails, BlogPost
+    WishList, ProductReview, OrderDetails, OrderItems, BlogPost
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -233,7 +233,7 @@ class OrderItemsSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
     class Meta:
         model = OrderItems
-        fields = ['id', "order", "product", "quantity", 'created_at', 'modified_at']
+        fields = '__all__'
 
     def create(self, validated_data):
         # gets owner of the orderitems
@@ -255,7 +255,7 @@ class OrderItemsSerializer(serializers.ModelSerializer):
 class OrderDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderDetails
-        fields = ["user", "total", "voided", "created_at", "modified_at"]
+        fields = '__all__'
 
     def get_permissions(self):
         user = self.context['request'].user

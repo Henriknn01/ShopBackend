@@ -10,11 +10,11 @@ from rest_framework.renderers import JSONRenderer
 import json
 
 from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, Image, ProductList, \
-    WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails, BlogPost
+    WishList, ProductReview, OrderDetails, OrderItems, BlogPost
 from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCategorySerializer, \
-    OrderDetailsSerializer, OrderItemsSerializer, PaymentDetailsSerializer, \
+    OrderDetailsSerializer, OrderItemsSerializer, \
     TagSerializer, ImageSerializer, ProductListSerializer, WishListSerializer, \
-    ProductReviewSerializer, OrderShippingDetailsSerializer, ProductUserSerializer, ProductDetailedSerializer, BlogPostSerializer
+    ProductReviewSerializer, ProductUserSerializer, ProductDetailedSerializer, BlogPostSerializer
 
 from functools import wraps
 import jwt
