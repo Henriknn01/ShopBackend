@@ -7,8 +7,8 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 from ShopCMS.views import UserViewSet, DiscountViewSet, ProductCategoryViewSet, ProductViewSet, \
-    OrderDetailsViewSet, OrderItemsViewSet, PaymentDetailsViewSet, WishListViewSet, TagViewSet, ImageViewSet, \
-    ProductListViewSet, ProductReviewViewSet, OrderShippingDetailsViewSet, BlogPostViewSet
+    OrderDetailsViewSet, OrderItemsViewSet, WishListViewSet, TagViewSet, ImageViewSet, \
+    ProductListViewSet, ProductReviewViewSet, BlogPostViewSet
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -37,8 +37,6 @@ router.register('wishlist', WishListViewSet, basename='wishlist')
 router.register('productReview', ProductReviewViewSet, basename='product-review')
 router.register('order', OrderDetailsViewSet, basename='order-detail')
 router.register('order-item', OrderItemsViewSet, basename='order-item')
-router.register('order-shipping', OrderShippingDetailsViewSet, basename='order-shipping-detail')
-router.register('payment', PaymentDetailsViewSet, basename='payment-detail')
 
 urlpatterns = [
     path('', include(router.urls)),

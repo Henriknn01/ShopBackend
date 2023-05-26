@@ -10,11 +10,11 @@ from rest_framework.renderers import JSONRenderer
 import json
 
 from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, Image, ProductList, \
-    WishList, ProductReview, OrderDetails, OrderItems, OrderShippingDetails, PaymentDetails, BlogPost
+    WishList, ProductReview, OrderDetails, OrderItems, BlogPost
 from ShopCMS.serializers import UserSerializer, DiscountSerializer, ProductCategorySerializer, \
-    OrderDetailsSerializer, OrderItemsSerializer, PaymentDetailsSerializer, \
+    OrderDetailsSerializer, OrderItemsSerializer, \
     TagSerializer, ImageSerializer, ProductListSerializer, WishListSerializer, \
-    ProductReviewSerializer, OrderShippingDetailsSerializer, ProductUserSerializer, ProductDetailedSerializer, BlogPostSerializer
+    ProductReviewSerializer, ProductUserSerializer, ProductDetailedSerializer, BlogPostSerializer
 
 from functools import wraps
 import jwt
@@ -207,45 +207,6 @@ class OrderItemsViewSet(viewsets.ModelViewSet):
         queryset = OrderItems.objects.all()
         user = self.request.user
         return get_objects_for_user(user, "view_orderitems", queryset)
-
-    def perform_create(self, serializer):
-        serializer.save()
-
-
-class OrderShippingDetailsViewSet(viewsets.ModelViewSet):
-    queryset = OrderShippingDetails.objects.all()
-    serializer_class = OrderShippingDetailsSerializer
-    permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['id', "order", "full_name", "address", "city", "country", "region", "postal_code", "phone_number"]
-    search_fields = ['=id']
-    ordering_fields = ['id']
-    ordering = ['id']
-
-    def get_queryset(self):
-        queryset = OrderShippingDetails.objects.all()
-        user = self.request.user
-        return get_objects_for_user(user, "view_ordershippingdetails", queryset)
-
-
-    def perform_create(self, serializer):
-        serializer.save()
-
-
-class PaymentDetailsViewSet(viewsets.ModelViewSet):
-    queryset = PaymentDetails.objects.all()
-    serializer_class = PaymentDetailsSerializer
-    permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["id", "order", "amount", "provider", "status", "created_at", "modified_at"]
-    search_fields = ['=id']
-    ordering_fields = ['id']
-    ordering = ['id']
-
-    def get_queryset(self):
-        queryset = PaymentDetails.objects.all()
-        user = self.request.user
-        return get_objects_for_user(user, "view_paymentdetails", queryset)
 
     def perform_create(self, serializer):
         serializer.save()

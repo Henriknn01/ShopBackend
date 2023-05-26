@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -173,8 +172,8 @@ else:
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
     'SIGNING_KEY': SECRET_KEY,
     'TOKEN_OBTAIN_SERIALIZER': "ShopCMS.djoserSerializers.ShopCMSTokenObtainPairSerializer",
     'AUTH_TOKEN_CLASSES': (

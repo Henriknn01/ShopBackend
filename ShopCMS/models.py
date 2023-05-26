@@ -145,8 +145,23 @@ class ProductReview(models.Model):
 
 class OrderDetails(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    total = models.FloatField()
+    stripe_id = models.CharField(max_length=512)
+    subtotal = models.FloatField(default=0)
+    total = models.FloatField(default=0)
+    status = models.CharField(max_length=256, default="Processing")
+    payment_status = models.CharField(max_length=256, default="Processing")
+    transaction_status = models.CharField(max_length=256, default="Processing")
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     voided = models.BooleanField(default=False)
+    shipping_cost = models.FloatField()
+    shipping_full_name = models.CharField(max_length=256)
+    shipping_address = models.CharField(max_length=256)
+    shipping_city = models.CharField(max_length=256)
+    shipping_country = models.CharField(max_length=256)
+    shipping_region = models.CharField(max_length=256, null=True, blank=True)
+    shipping_postal_code = models.PositiveIntegerField()
+    shipping_phone_number = models.CharField(max_length=128, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -157,41 +172,14 @@ class OrderDetails(models.Model):
 class OrderItems(models.Model):
     order = models.ForeignKey(OrderDetails, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    price = models.FloatField()
+    total = models.FloatField()
     quantity = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.product.name} - {self.quantity}"
-
-
-class OrderShippingDetails(models.Model):
-    order = models.ForeignKey(OrderDetails, on_delete=models.PROTECT)
-    full_name = models.CharField(max_length=256)
-    address = models.CharField(max_length=256)
-    city = models.CharField(max_length=256)
-    country = models.CharField(max_length=256)
-    region = models.CharField(max_length=256)
-    postal_code = models.PositiveIntegerField()
-    phone_number = models.CharField(max_length=128)
-
-
-
-# this needs per object
-class PaymentDetails(models.Model):
-    order = models.ForeignKey(OrderDetails, on_delete=models.PROTECT)
-    amount = models.FloatField(default=0)
-    provider = models.CharField(max_length=256, null=False, default="Unknown")
-    status = models.CharField(max_length=256, default="Processing")
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.id}: {self.status}"
-
-
-# this needs per object
-
 
 
 #  https://www.tiny.cloud/
