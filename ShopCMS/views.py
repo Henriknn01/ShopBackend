@@ -211,45 +211,6 @@ class OrderItemsViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
-
-class OrderShippingDetailsViewSet(viewsets.ModelViewSet):
-    queryset = OrderShippingDetails.objects.all()
-    serializer_class = OrderShippingDetailsSerializer
-    permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['id', "order", "full_name", "address", "city", "country", "region", "postal_code", "phone_number"]
-    search_fields = ['=id']
-    ordering_fields = ['id']
-    ordering = ['id']
-
-    def get_queryset(self):
-        queryset = OrderShippingDetails.objects.all()
-        user = self.request.user
-        return get_objects_for_user(user, "view_ordershippingdetails", queryset)
-
-
-    def perform_create(self, serializer):
-        serializer.save()
-
-
-class PaymentDetailsViewSet(viewsets.ModelViewSet):
-    queryset = PaymentDetails.objects.all()
-    serializer_class = PaymentDetailsSerializer
-    permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["id", "order", "amount", "provider", "status", "created_at", "modified_at"]
-    search_fields = ['=id']
-    ordering_fields = ['id']
-    ordering = ['id']
-
-    def get_queryset(self):
-        queryset = PaymentDetails.objects.all()
-        user = self.request.user
-        return get_objects_for_user(user, "view_paymentdetails", queryset)
-
-    def perform_create(self, serializer):
-        serializer.save()
-
 class BlogPostViewSet(viewsets.ModelViewSet):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
