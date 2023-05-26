@@ -145,9 +145,12 @@ class ProductReview(models.Model):
 
 class OrderDetails(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
+    stripe_id = models.CharField(max_length=512)
     subtotal = models.FloatField(default=0)
     total = models.FloatField(default=0)
     status = models.CharField(max_length=256, default="Processing")
+    payment_status = models.CharField(max_length=256, default="Processing")
+    transaction_status = models.CharField(max_length=256, default="Processing")
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     voided = models.BooleanField(default=False)
