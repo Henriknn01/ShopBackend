@@ -47,7 +47,7 @@ class Image(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.src}-{self.id}"
+        return f"{self.alt}-{self.id}"
 
 class Tag(models.Model):
     name = models.CharField(max_length=256)
@@ -113,7 +113,7 @@ class ProductList(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.id}-{self.name}"
 
 
 # this needs per object as only the user who created can edit, everybody can view
