@@ -38,7 +38,7 @@ class UserViewSet(viewsets.ModelViewSet):
     ordering = ['id']
 
     def get_queryset(self):
-        queryset = OrderDetails.objects.all()
+        queryset = User.objects.all()
         user = self.request.user
         return get_objects_for_user(user, "view_user", queryset)
 
