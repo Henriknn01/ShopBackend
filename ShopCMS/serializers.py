@@ -11,7 +11,7 @@ from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, Image,
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "email"]
+        fields = ["email", "first_name", "last_name", "subscribed_newsletter"]
 
 
 class ImageSerializer(serializers.ModelSerializer):
