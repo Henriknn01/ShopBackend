@@ -11,7 +11,7 @@ from ShopCMS.models import User, Discount, Tag, ProductCategory, Product, Image,
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "email"]
+        fields = ["id", "email", "first_name", "last_name", "subscribed_newsletter"]
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -114,11 +114,10 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-
         # check if user is appart of sales
-        group = Group.objects.get(name="Sale")
+        group = Group.objects.get(name="sale")
         user = self.context['request'].user
-        if not user.groups.filter(name='Sale').exists():
+        if not user.groups.filter(name='sale').exists():
             raise PermissionDenied("You don't have permission to create a product.")
 
         # creates catagory
@@ -129,24 +128,6 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         assign_perm('delete_productcategory', group, productCategory)
         return productCategory
 
-
-
-
-    def create(self, validated_data):
-
-        # check if user is appart of sales
-        group = Group.objects.get(name="sale")
-        user = self.context['request'].user
-        if not user.groups.filter(name='sale').exists():
-            raise PermissionDenied("You don't have permission to create a product.")
-
-        # creates Image
-        CreatedImage = Image.objects.create(**validated_data)
-
-        # assign perms to group
-        assign_perm('change_image', group, CreatedImage)
-        assign_perm('delete_image', group, CreatedImage)
-        return CreatedImage
 
 
 
