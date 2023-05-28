@@ -318,6 +318,6 @@ class BlogPostSerializer(serializers.ModelSerializer):
         created_blog_post = BlogPost.objects.create(**validated_data)
 
         # Group perms
-        assign_perm('edit_orderitems', group, created_blog_post)
+        assign_perm('change_blogpost', group, created_blog_post)
 
         return created_blog_post
