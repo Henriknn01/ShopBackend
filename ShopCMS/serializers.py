@@ -46,6 +46,8 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'modified_at', 'deleted_at']
+
 
     def create(self, validated_data):
 
@@ -66,13 +68,20 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class ProductDetailedSerializer(serializers.ModelSerializer):
-    image = ImageSerializer(many=True)
+    image = serializers.PrimaryKeyRelatedField(queryset=Image.objects.all(), many=True, write_only=True)
 
     class Meta:
         model = Product
         fields = ["id", "name", "desc", "sku", "category", "tag", "cost", "price", "quantity", "discount",
                   "image", "created_at", "modified_at", "deleted_at"]
+        read_only_fields = ['id', 'created_at', 'modified_at', 'deleted_at']
 
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Replace the images field with serialized images data
+        representation['image'] = ImageSerializer(instance.image.all(), many=True).data
+        return representation
 
     def create(self, validated_data):
 
@@ -83,15 +92,15 @@ class ProductDetailedSerializer(serializers.ModelSerializer):
             raise PermissionDenied("You don't have permission to create a product.")
 
         #pops data that will be set later, and creates product
-        tags_data = validated_data.pop('tags', [])
+        tags_data = validated_data.pop('tag', [])
         categories_data = validated_data.pop('category', [])
-        images_data = validated_data.pop('images', [])
+        images_data = validated_data.pop('image', [])
         product = Product.objects.create(**validated_data)
 
         # change products to set catagory, tags and images
         product.category.set(categories_data)
-        product.tags.set(tags_data)
-        product.images.set(images_data)
+        product.tag.set(tags_data)
+        product.image.set(images_data)
 
         # assign perms to group
         assign_perm('change_product', group, product)
@@ -105,22 +114,28 @@ class ProductUserSerializer(serializers.ModelSerializer):
         model = Product
         fields = ["id", "name", "desc", "sku", "tag", "price", "quantity", "discount", "image", "category"]
 
+
 class ProductCategorySerializer(serializers.ModelSerializer):
-    image = ImageSerializer(read_only=True)
+    image = serializers.PrimaryKeyRelatedField(queryset=Image.objects.all(), write_only=True)
+
     class Meta:
         model = ProductCategory
         fields = ["id", "name", "desc", "image", "parent_category"]
 
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['image'] = ImageSerializer(instance.image).data
+        return representation
 
     def create(self, validated_data):
-        # check if user is appart of sales
+        # check if user is a part of sales
         group = Group.objects.get(name="sale")
         user = self.context['request'].user
         if not user.groups.filter(name='sale').exists():
             raise PermissionDenied("You don't have permission to create a product.")
 
-        # creates catagory
+        # creates category
         productCategory = ProductCategory.objects.create(**validated_data)
 
         # assign perms to group
@@ -132,11 +147,19 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 
 
 class ProductListSerializer(serializers.ModelSerializer):
-    products = ProductUserSerializer(many=True, read_only=True)
-    image = ImageSerializer(many=True, read_only=True)
+    products = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), many=True, write_only=True)
+    image = serializers.PrimaryKeyRelatedField(queryset=Image.objects.all(), many=True, write_only=True)
     class Meta:
         model = ProductList
-        fields = '__all__'
+        fields = ["id", "name", "slug", "featured", "category", "image", "products"]
+
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Replace the images field with serialized images data
+        representation['image'] = ImageSerializer(instance.image.all(), many=True).data
+        representation['products'] = ProductUserSerializer(instance.products.all(), many=True).data
+        return representation
 
     def create(self, validated_data):
 
@@ -148,10 +171,15 @@ class ProductListSerializer(serializers.ModelSerializer):
 
         # pops data that will be set later, and creates ProductList
         products = validated_data.pop('products', [])
+        images_data = validated_data.pop('images', [])
+        category_data = validated_data.pop('category', [])
         productlist = ProductList.objects.create(**validated_data)
 
         # change productlist to add products
         productlist.products.set(products)
+        productlist.image.set(images_data)
+        productlist.category.set(category_data)
+
 
         # assign perms to group
         assign_perm('change_productlist', group, productlist)
@@ -164,6 +192,7 @@ class WishListSerializer(serializers.ModelSerializer):
     class Meta:
         model = WishList
         fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'modified_at', 'deleted_at']
 
     def create(self, validated_data):
 
@@ -191,6 +220,7 @@ class ProductReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductReview
         fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'modified_at', 'deleted_at']
 
     def create(self, validated_data):
 
@@ -211,10 +241,18 @@ class ProductReviewSerializer(serializers.ModelSerializer):
 
 
 class OrderItemsSerializer(serializers.ModelSerializer):
-    product = ProductUserSerializer(read_only=True)
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), write_only=True)
     class Meta:
         model = OrderItems
         fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'modified_at', 'deleted_at']
+
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Replace the images field with serialized images data
+        representation['product'] = ProductUserSerializer(instance.product).data
+        return representation
 
     def create(self, validated_data):
         # gets owner of the orderitems
