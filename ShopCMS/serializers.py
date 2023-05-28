@@ -46,6 +46,8 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'modified_at', 'deleted_at']
+
 
     def create(self, validated_data):
 
@@ -112,12 +114,14 @@ class ProductUserSerializer(serializers.ModelSerializer):
         model = Product
         fields = ["id", "name", "desc", "sku", "tag", "price", "quantity", "discount", "image", "category"]
 
+
 class ProductCategorySerializer(serializers.ModelSerializer):
     image = serializers.PrimaryKeyRelatedField(queryset=Image.objects.all(), write_only=True)
 
     class Meta:
         model = ProductCategory
         fields = ["id", "name", "desc", "image", "parent_category"]
+
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -147,7 +151,7 @@ class ProductListSerializer(serializers.ModelSerializer):
     image = serializers.PrimaryKeyRelatedField(queryset=Image.objects.all(), many=True, write_only=True)
     class Meta:
         model = ProductList
-        fields = '__all__'
+        fields = ["id", "name", "slug", "featured", "category", "image", "products"]
 
 
     def to_representation(self, instance):
@@ -188,6 +192,7 @@ class WishListSerializer(serializers.ModelSerializer):
     class Meta:
         model = WishList
         fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'modified_at', 'deleted_at']
 
     def create(self, validated_data):
 
@@ -215,6 +220,7 @@ class ProductReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductReview
         fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'modified_at', 'deleted_at']
 
     def create(self, validated_data):
 
@@ -235,10 +241,18 @@ class ProductReviewSerializer(serializers.ModelSerializer):
 
 
 class OrderItemsSerializer(serializers.ModelSerializer):
-    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), write_only=True)
     class Meta:
         model = OrderItems
         fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'modified_at', 'deleted_at']
+
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Replace the images field with serialized images data
+        representation['product'] = ProductUserSerializer(instance.product).data
+        return representation
 
     def create(self, validated_data):
         # gets owner of the orderitems
