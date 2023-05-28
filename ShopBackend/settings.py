@@ -100,6 +100,12 @@ if PRODUCTION == True:
             "PORT": env("SQL_PORT"),
         }
     }
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": env('REDIS_LOCATION'),
+        }
+    }
 else:
     DATABASES = {
         "default": {
@@ -209,10 +215,3 @@ DJOSER = {
        'user_delete': 'djoser.serializers.UserDeleteSerializer',
    }
 }
-"""
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": env('REDIS_LOCATION'),
-    }
-}"""
