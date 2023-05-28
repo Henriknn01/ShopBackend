@@ -211,7 +211,7 @@ class ProductReviewSerializer(serializers.ModelSerializer):
 
 
 class OrderItemsSerializer(serializers.ModelSerializer):
-    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    product = ProductUserSerializer(read_only=True)
     class Meta:
         model = OrderItems
         fields = '__all__'
