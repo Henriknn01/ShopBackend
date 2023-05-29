@@ -178,9 +178,9 @@ class OrderDetailsViewSet(viewsets.ModelViewSet):
     serializer_class = OrderDetailsSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['id', "user", "total", "voided", 'created_at', 'modified_at']
+    filterset_fields = ['id', "user", "status", "total", "voided", 'created_at', 'modified_at']
     search_fields = ['=id']
-    ordering_fields = ['id']
+    ordering_fields = ['id', 'created_at']
     ordering = ['id']
 
     def get_queryset(self):
