@@ -47,10 +47,8 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     'drf_yasg',
-'corsheaders',
 
 ]
-CORS_ALLOW_ALL_ORIGINS = True
 
 AUTH_USER_MODEL = 'ShopCMS.User'
 
@@ -63,7 +61,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.RemoteUserMiddleware',
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-'corsheaders.middleware.CorsMiddleware',
 
 ]
 
@@ -101,12 +98,17 @@ if PRODUCTION == "True":
             "HOST": env("SQL_HOST"),
             "PORT": env("SQL_PORT"),
             "OPTIONS": {
-            "sslmode": 'verify-ca',
-            "sslrootcert": 'C:\\Users\Gardh\\PycharmProjects\\ShopBackend\\ca-certificate.crt',
+            "sslmode": 'require',
+            "sslrootcert": BASE_DIR / 'ca-certificate.crt',
             },
         }
     }
-
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": env('REDIS_LOCATION'),
+        }
+    }
 else:
     DATABASES = {
         "default": {
