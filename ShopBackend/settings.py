@@ -99,16 +99,11 @@ if PRODUCTION == "True":
             "PORT": env("SQL_PORT"),
             "OPTIONS": {
             "sslmode": 'require',
-            "sslrootcert": BASE_DIR / 'ca-certificate.crt',
+            "sslrootcert": '/home/app/shopCMSpostgresql.crt',
             },
         }
     }
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.redis.RedisCache",
-            "LOCATION": env('REDIS_LOCATION'),
-        }
-    }
+
 else:
     DATABASES = {
         "default": {

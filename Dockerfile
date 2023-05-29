@@ -5,6 +5,7 @@ ENV DockerHOME=/home/app/shopCMS
 # set work directory
 RUN mkdir -p $DockerHOME
 
+
 # where your code lives
 WORKDIR $DockerHOME
 
@@ -20,11 +21,9 @@ COPY . $DockerHOME
 # run this command to install all dependencies
 RUN pip install -r requirements.txt
 
-# set the external PostgreSQL database URL
-ENV DATABASE_URL=postgresql://your_username:your_password@db:5432/test
-
 # port where the Django app runs
 EXPOSE 8000
+ENV PGSSLCERT $DockerHOME/postgresql.crt
 
 # start server
-CMD python manage.py runserver 0.0.0.0:8000
+CMD gunicorn ShopBackend.wsgi --user www-data --bind 0.0.0.0:8000 --workers 3
