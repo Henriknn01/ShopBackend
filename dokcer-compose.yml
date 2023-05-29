@@ -1,0 +1,26 @@
+version: '3'
+services:
+  django:
+    image: django-docker:0.0.1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_HOST=db-postgresql-ams3-05403-do-user-14165075-0.b.db.ondigitalocean.com
+      - DATABASE_PORT=25060
+      - DATABASE_NAME=defaultdb
+      - DATABASE_USER=doadmin
+      - DATABASE_PASSWORD=AVNS_iIMYBard2fnamhM0Qv7
+      - DATABASE_SSL_MODE=require
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=defaultdb
+      - POSTGRES_USER=doadmin
+      - POSTGRES_PASSWORD=AVNS_iIMYBard2fnamhM0Qv7
