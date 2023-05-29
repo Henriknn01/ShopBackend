@@ -290,8 +290,8 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
         obj = self.instance
 
         # Check if the user has the required permission to view the object
-        if user.has_perm('ShopCMS_view_paymentDetails', obj):
-            raise PermissionDenied("You do not have permission to view this product.")
+        if not user.has_perm('view_orderdetails', obj):
+            raise PermissionDenied("You do not have permission to view this Order.")
 
     def create(self, validated_data):
 
@@ -320,8 +320,8 @@ class BlogPostSerializer(serializers.ModelSerializer):
         # check if user is appart of sales
         group = Group.objects.get(name="sale")
         user = self.context['request'].user
-        if not user.groups.filter(name='sale').exists():
-            raise PermissionDenied("You don't have permission to create a product.")
+        if not user.has_perm('add_blogpost'):
+            raise PermissionDenied("You don't have permission to create a blogpost.")
 
         # creates orderItems
         created_blog_post = BlogPost.objects.create(**validated_data)

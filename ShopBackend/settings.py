@@ -84,12 +84,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "ShopBackend.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 PRODUCTION = env('PRODUCTION')
-if PRODUCTION == True:
+if PRODUCTION == "True":
     DATABASES = {
         "default": {
             "ENGINE": env("SQL_ENGINE"),
@@ -98,14 +97,13 @@ if PRODUCTION == True:
             "PASSWORD": env("SQL_PASSWORD"),
             "HOST": env("SQL_HOST"),
             "PORT": env("SQL_PORT"),
+            "OPTIONS": {
+            "sslmode": 'require',
+            "sslrootcert": '/home/app/shopCMSpostgresql.crt',
+            },
         }
     }
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.redis.RedisCache",
-            "LOCATION": env('REDIS_LOCATION'),
-        }
-    }
+
 else:
     DATABASES = {
         "default": {
