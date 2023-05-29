@@ -217,10 +217,19 @@ class WishListSerializer(serializers.ModelSerializer):
 
 
 class ProductReviewSerializer(serializers.ModelSerializer):
+    author = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
+
     class Meta:
         model = ProductReview
         fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'modified_at', 'deleted_at']
+        read_only_fields = ['id', "author", 'created_at', 'modified_at', 'deleted_at']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        author_data = UserSerializer(instance.author).data
+        first_name = author_data.get('first_name')
+        representation['author'] = first_name
+        return representation
 
     def create(self, validated_data):
 
