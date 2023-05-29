@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     'drf_yasg',
-
+    'storages',
 ]
 
 AUTH_USER_MODEL = 'ShopCMS.User'
@@ -154,6 +154,8 @@ USE_TZ = True
 STATIC_URL = "staticfiles/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+from .cdn.conf import *
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -218,3 +220,4 @@ DJOSER = {
        'user_delete': 'djoser.serializers.UserDeleteSerializer',
    }
 }
+
