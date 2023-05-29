@@ -24,6 +24,7 @@ RUN pip install -r requirements.txt
 # port where the Django app runs
 EXPOSE 8000
 ENV PGSSLCERT $DockerHOME/postgresql.crt
+RUN python manage.py collectstatic --noinput
 
 # start server
 CMD gunicorn ShopBackend.wsgi --user www-data --bind 0.0.0.0:8000 --workers 3
