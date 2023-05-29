@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "ShopCMS",
     "guardian",
     'djoser',
+    "corsheaders",
     'django_filters',
     'drf_yasg',
     'storages',
@@ -66,7 +67,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.RemoteUserMiddleware',
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+]
 
+CORS_ALLOWED_ORIGINS = [
+    "https://norheimweb.com",
+    "https://www.norheimweb.com",
 ]
 
 ROOT_URLCONF = "ShopBackend.urls"
