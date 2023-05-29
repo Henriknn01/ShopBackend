@@ -135,6 +135,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+SWAGGER_SETTINGS = {
+   'DEFAULT_INFO': 'ShopBackend.urls',
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
