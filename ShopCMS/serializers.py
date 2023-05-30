@@ -171,7 +171,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
         # pops data that will be set later, and creates ProductList
         products = validated_data.pop('products', [])
-        images_data = validated_data.pop('images', [])
+        images_data = validated_data.pop('image', [])
         category_data = validated_data.pop('category', [])
         productlist = ProductList.objects.create(**validated_data)
 
