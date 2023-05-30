@@ -28,6 +28,39 @@ To get a copy of the backend up and running on your local machine, follow these 
    - On macOS/Linux: `source myenv/bin/activate`
 5. Install the project dependencies: `pip install -r requirements.txt`
 
+## .env template
+These are the environment variables required to run the frontend in test mode
+.
+Change the variables to your values.
+```dotenv # settings
+SECRET_KEY=YourSecret
+DEBUG=True
+PRODUCTION=False
+EMAIL_HOST=Yoursmtpserver
+EMAIL_PORT=Yoursmtpport
+EMAIL_USE_TLS=True
+DEFAULT_FROM_EMAIL=YourSupportEmail
+EMAIL_HOST_USER=yourEmailUser
+EMAIL_HOST_PASSWORD=YourEmailPass
+REDIS_LOCATION=yourRediskLocation
+SQL_ENGINE=django.db.backends.postgresql_psycopg2
+SQL_DATABASE=yourDbName
+SQL_USER=yourDbuser
+SQL_PASSWORD=yourDbPassword
+SQL_HOST=yourdbHost
+SQL_PORT=yourDbPort
+JWT_ACCESS_TOKEN_LIFETIME=1
+JWT_REFRESH_TOKEN_LIFETIME=30
+JWT_SIGNING_KEY=yourJwTKey
+ALLOWED_HOSTS=*
+CSRF_TRUSTED_ORIGINS=http://localhost http://0.0.0.0
+AWS_ACCESS_KEY_ID=yourAWSKEY
+AWS_SECRET_ACCESS_KEY=yourAWSSecret
+AWS_STORAGE_BUCKET_NAME=yourBucketName
+AWS_S3_ENDPOINT_URL=yourS3Endpoint
+AWS_LOCATION=yourAWSlocation
+```
+
 ## Local Usage
 
 To use the backend, follow these steps:
