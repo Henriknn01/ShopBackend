@@ -26,6 +26,7 @@ This guide provides step-by-step instructions on how to run Postman tests.
 1. In the left sidebar of the Postman application, click on **Collections**.
 2. Find and click on the "Wave shop tests" collection.
 3. In the right upper corner of the screen, select **Wave Environment** as the environment for the collection.
+4. go to the Variables tab on the collection, and change baseUrl to the correct url you want to test
 
 ---
 
