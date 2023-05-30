@@ -31,7 +31,7 @@ class DiscountSerializer(serializers.ModelSerializer):
         group = Group.objects.get(name="sale")
         user = self.context['request'].user
         if not user.groups.filter(name='sale').exists():
-            raise PermissionDenied("You don't have permission to create a product.")
+            raise PermissionDenied("You don't have permission to create a Discount.")
 
         #creates discount
         discount = Discount.objects.create(**validated_data)
@@ -55,7 +55,7 @@ class TagSerializer(serializers.ModelSerializer):
         group = Group.objects.get(name="sale")
         user = self.context['request'].user
         if not user.groups.filter(name='sale').exists():
-            raise PermissionDenied("You don't have permission to create a product.")
+            raise PermissionDenied("You don't have permission to create a Tag.")
 
         #creates tag
         tag = Tag.objects.create(**validated_data)
@@ -133,7 +133,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         group = Group.objects.get(name="sale")
         user = self.context['request'].user
         if not user.groups.filter(name='sale').exists():
-            raise PermissionDenied("You don't have permission to create a product.")
+            raise PermissionDenied("You don't have permission to create a Category.")
 
         # creates category
         productCategory = ProductCategory.objects.create(**validated_data)
@@ -167,7 +167,7 @@ class ProductListSerializer(serializers.ModelSerializer):
         group = Group.objects.get(name="sale")
         user = self.context['request'].user
         if not user.groups.filter(name='sale').exists():
-            raise PermissionDenied("You don't have permission to create a product.")
+            raise PermissionDenied("You don't have permission to create a ProductList.")
 
         # pops data that will be set later, and creates ProductList
         products = validated_data.pop('products', [])
