@@ -1,6 +1,6 @@
 # Wave Petplus Backend
 
-Wave Petplus Backend is a Django-based backend application for [describe the purpose of the project and its main features]. This repository contains all the code and resources required to run the backend.
+Wave Petplus Backend is a Django-based backend application. This repository contains all the code and resources required to run the backend.
 
 ## Table of Contents
 
