@@ -16,6 +16,12 @@ Wave Petplus Backend is a Django-based backend application. This repository cont
 
 Wave Petplus Backend is built using the Django framework, a high-level Python web framework that promotes rapid development and clean, pragmatic design. The backend utilizes various Django features and follows best practices to ensure a robust and scalable application.
 
+## Test users
+These are the available test users for testing the website.
+
+Users details available in Inspera.
+
+
 ## Installation
 
 To get a copy of the backend up and running on your local machine, follow these steps:
@@ -104,6 +110,13 @@ The backend provides the following API endpoints:
 | [Order](http://api.norheimweb.com/order/)           | API endpoint for managing orders                  |
 | [Order Item](http://api.norheimweb.com/order-item/) | API endpoint for managing order items             |
 
+## general links
+
+Link to Frontend: www.norheimweb.com
+
+Link to Backend: https://api.norheimweb.com
+
+Link to Swagger api documentation: https://api.norheimweb.com/swagger/
 
 
 ## License
