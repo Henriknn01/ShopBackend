@@ -9,7 +9,6 @@ Wave Petplus Backend is a Django-based backend application for [describe the pur
 - [Usage](#Local-Usage)
 - [Docker](#Running-with-Docker-and-Docker-Compose)
 - [API Endpoints](#api-endpoints)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Overview
@@ -32,7 +31,7 @@ To get a copy of the backend up and running on your local machine, follow these 
 
 To use the backend, follow these steps:
 
-1. Apply migrations to set up the database: `python manage.py makemigrations`
+1. Make migrations: `python manage.py makemigrations`
 2. Apply migrations to set up the database: `python manage.py migrate`
 3. Start the development server: `python manage.py runserver`
 4. Access the backend API endpoints through `http://localhost:8000`
@@ -69,15 +68,7 @@ The backend provides the following API endpoints:
 | [Order](http://api.norheimweb.com/order/)           | API endpoint for managing orders                  |
 | [Order Item](http://api.norheimweb.com/order-item/) | API endpoint for managing order items             |
 
-## Contributing
 
-We welcome contributions from the community. To contribute to the backend, please follow these steps:
-
-1. Fork the repository
-2. Create a new branch: `git checkout -b feature/your-feature-name`
-3. Make your changes and commit them: `git commit -m 'Add some feature'`
-4. Push to the branch: `git push origin feature/your-feature-name`
-5. Create a pull request
 
 ## License
 
