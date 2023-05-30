@@ -34,9 +34,10 @@ To use the backend, follow these steps:
 
 1. Make migrations: `python manage.py makemigrations`
 2. Apply migrations to set up the database: `python manage.py migrate`
-3. Start the development server: `python manage.py runserver`
-4. Access the backend API endpoints through `http://localhost:8000`
-5. [Additional usage instructions, if any]
+3. Create a super user: `python manage.py createsuperuser` and follow the steps
+4. Create the groups: `python manage.py create_groups`
+5. Start the development server: `python manage.py runserver`
+6. Access the backend API endpoints through `http://localhost:8000`
 
 ## Running with Docker and Docker Compose
 
