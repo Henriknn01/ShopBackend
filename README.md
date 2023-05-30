@@ -1,6 +1,6 @@
 # Wave Petplus Backend
 
-Wave Petplus Backend is a Django-based backend application for [describe the purpose of the project and its main features]. This repository contains all the code and resources required to run the backend.
+Wave Petplus Backend is a Django-based backend application. This repository contains all the code and resources required to run the backend.
 
 ## Table of Contents
 
@@ -11,7 +11,7 @@ Wave Petplus Backend is a Django-based backend application for [describe the pur
 - [API Endpoints](#api-endpoints)
 - [License](#license)
 - [Postman test](#Postman-Tests)
-- 
+
 ## Overview
 
 Wave Petplus Backend is built using the Django framework, a high-level Python web framework that promotes rapid development and clean, pragmatic design. The backend utilizes various Django features and follows best practices to ensure a robust and scalable application.
@@ -28,15 +28,50 @@ To get a copy of the backend up and running on your local machine, follow these 
    - On macOS/Linux: `source myenv/bin/activate`
 5. Install the project dependencies: `pip install -r requirements.txt`
 
+## .env template
+These are the environment variables required to run the frontend in test mode
+.
+Change the variables to your values.
+```dotenv # settings
+SECRET_KEY=YourSecret
+DEBUG=True
+PRODUCTION=False
+EMAIL_HOST=Yoursmtpserver
+EMAIL_PORT=Yoursmtpport
+EMAIL_USE_TLS=True
+DEFAULT_FROM_EMAIL=YourSupportEmail
+EMAIL_HOST_USER=yourEmailUser
+EMAIL_HOST_PASSWORD=YourEmailPass
+REDIS_LOCATION=yourRediskLocation
+SQL_ENGINE=django.db.backends.postgresql_psycopg2
+SQL_DATABASE=yourDbName
+SQL_USER=yourDbuser
+SQL_PASSWORD=yourDbPassword
+SQL_HOST=yourdbHost
+SQL_PORT=yourDbPort
+JWT_ACCESS_TOKEN_LIFETIME=1
+JWT_REFRESH_TOKEN_LIFETIME=30
+JWT_SIGNING_KEY=yourJwTKey
+ALLOWED_HOSTS=*
+CSRF_TRUSTED_ORIGINS=http://localhost http://0.0.0.0
+AWS_ACCESS_KEY_ID=yourAWSKEY
+AWS_SECRET_ACCESS_KEY=yourAWSSecret
+AWS_STORAGE_BUCKET_NAME=yourBucketName
+AWS_S3_ENDPOINT_URL=yourS3Endpoint
+AWS_LOCATION=yourAWSlocation
+```
+
 ## Local Usage
 
 To use the backend, follow these steps:
 
 1. Make migrations: `python manage.py makemigrations`
 2. Apply migrations to set up the database: `python manage.py migrate`
-3. Start the development server: `python manage.py runserver`
-4. Access the backend API endpoints through `http://localhost:8000`
-5. [Additional usage instructions, if any]
+3. Create a super user: `python manage.py createsuperuser` and follow the steps
+4. Create the groups: `python manage.py create_groups`
+5. Start the development server: `python manage.py runserver`
+6. Access the backend API endpoints through `http://localhost:8000`
+7. go to `http://localhost:8000/admin` and go into the users, select your super user and add all groups to this user.
 
 ## Running with Docker and Docker Compose
 
