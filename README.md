@@ -10,7 +10,8 @@ Wave Petplus Backend is a Django-based backend application for [describe the pur
 - [Docker](#Running-with-Docker-and-Docker-Compose)
 - [API Endpoints](#api-endpoints)
 - [License](#license)
-
+- [Postman test](#Postman-Tests)
+- 
 ## Overview
 
 Wave Petplus Backend is built using the Django framework, a high-level Python web framework that promotes rapid development and clean, pragmatic design. The backend utilizes various Django features and follows best practices to ensure a robust and scalable application.
@@ -73,3 +74,8 @@ The backend provides the following API endpoints:
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Postman Tests
+
+As our postman tests were just to powerful, we have to run the collections one by one because of licensing issues.
+
