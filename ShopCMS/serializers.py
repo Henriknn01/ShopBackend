@@ -311,9 +311,16 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
 
 
 class BlogPostSerializer(serializers.ModelSerializer):
+    banner_image = serializers.PrimaryKeyRelatedField(queryset=Image.objects.all(), write_only=True)
+
     class Meta:
         model = BlogPost
         fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['banner_image'] = ImageSerializer(instance.banner_image).data
+        return representation
 
     def create(self, validated_data):
 
