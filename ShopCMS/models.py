@@ -13,7 +13,6 @@ class User(AbstractUser):
     subscribed_newsletter = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
 
     objects = UserAccountManager()
     REQUIRED_FIELDS = ['first_name', 'last_name']
