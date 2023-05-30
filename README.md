@@ -38,6 +38,7 @@ To use the backend, follow these steps:
 4. Create the groups: `python manage.py create_groups`
 5. Start the development server: `python manage.py runserver`
 6. Access the backend API endpoints through `http://localhost:8000`
+7. go to `http://localhost:8000/admin` and go into the users, select your super user and add all groups to this user.
 
 ## Running with Docker and Docker Compose
 
