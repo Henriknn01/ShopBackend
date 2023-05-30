@@ -1,40 +1,84 @@
-# ShopBackend
-ShopBackend is a backend system for an ecommerce shopping website with database models focused on clothing, but it is designed to be very general and easily adaptable to other types of products.
+# Wave Petplus Backend
 
-## Getting Started
-To use ShopBackend, you will need to have Python 3 installed on your system. You will also need to install the required Python packages, which are listed in the requirements.txt file. 
-You can install these packages using pip:
+Wave Petplus Backend is a Django-based backend application for [describe the purpose of the project and its main features]. This repository contains all the code and resources required to run the backend.
 
-`pip install -r requirements.txt`
+## Table of Contents
 
-Next, you will need to set up a database for ShopBackend to use. By default, ShopBackend is configured to use a SQLite database, but you can use any database supported by Django.
-To set up the database, run the following command:
+- [Overview](#overview)
+- [Installation](#installation)
+- [Usage](#Local-Usage)
+- [Docker](#Running-with-Docker-and-Docker-Compose)
+- [API Endpoints](#api-endpoints)
+- [Contributing](#contributing)
+- [License](#license)
 
-`python manage.py makemigrations`
+## Overview
 
-`python manage.py migrate`
+Wave Petplus Backend is built using the Django framework, a high-level Python web framework that promotes rapid development and clean, pragmatic design. The backend utilizes various Django features and follows best practices to ensure a robust and scalable application.
 
-Finally, you can start the development server by running:
+## Installation
 
-`python manage.py runserver`
+To get a copy of the backend up and running on your local machine, follow these steps:
 
-Database Models
-ShopBackend comes with several database models pre-defined, including models for products, categories, and orders. 
+1. Clone the repository: `git clone https://github.com/Henriknn01/ShopBackend`
+2. Change to the project directory: `cd ShopBackend`
+3. Create a virtual environment: `python -m venv myenv`
+4. Activate the virtual environment:
+   - On Windows: `myenv\Scripts\activate`
+   - On macOS/Linux: `source myenv/bin/activate`
+5. Install the project dependencies: `pip install -r requirements.txt`
+
+## Local Usage
+
+To use the backend, follow these steps:
+
+1. Apply migrations to set up the database: `python manage.py makemigrations`
+2. Apply migrations to set up the database: `python manage.py migrate`
+3. Start the development server: `python manage.py runserver`
+4. Access the backend API endpoints through `http://localhost:8000`
+5. [Additional usage instructions, if any]
+
+## Running with Docker and Docker Compose
+
+Wave Petplus Backend can be easily run using Docker and Docker Compose. Docker provides containerization, which ensures consistent and isolated environments for running the application. Docker Compose simplifies the management of multiple containers required for the project.
+
+To run Wave Petplus Backend with Docker and Docker Compose, follow these steps:
+
+1. Open the `docker-compose.yml` file and make any necessary configuration changes.
+2. Build the Docker images and start the containers: `docker-compose up -d`
+3. The application should now be running. You can access it through the specified port in your browser or use the provided API endpoints.
+
+Remember to stop the containers when you're done: `docker-compose down`
 
 ## API Endpoints
-ShopBackend provides a RESTful API for interacting with the database. The following endpoints are available:
 
-fill more here
+The backend provides the following API endpoints:
 
-URL | Description
-------------- | -------------
-/api/products/| get a list of all products
-/api/products/{id}/| get a specific product by ID
-/api/categories/: |get a list of all categories
-/api/categories/{id}/| get a specific category by ID
-/api/orders/| get a list of all orders
-/api/orders/{id}/| get a specific order by ID
-You can use these endpoints to build your own front-end for your ecommerce website or integrate ShopBackend with an existing front-end.
+| Name              | Description                                      |
+| ----------------- | ------------------------------------------------ |
+| [User](http://api.norheimweb.com/user/)             | API endpoint for managing user data               |
+| [Discount](http://api.norheimweb.com/discount/)     | API endpoint for managing discounts               |
+| [Tag](http://api.norheimweb.com/tag/)               | API endpoint for managing tags                    |
+| [Product Category](http://api.norheimweb.com/productcategory/) | API endpoint for managing product categories |
+| [Product](http://api.norheimweb.com/product/)       | API endpoint for managing products                |
+| [Image](http://api.norheimweb.com/image/)           | API endpoint for managing images                  |
+| [Blog Post](http://api.norheimweb.com/blogpost/)     | API endpoint for managing blog posts              |
+| [Product List](http://api.norheimweb.com/productlist/) | API endpoint for managing product lists        |
+| [Wishlist](http://api.norheimweb.com/wishlist/)     | API endpoint for managing wishlists               |
+| [Product Review](http://api.norheimweb.com/productReview/) | API endpoint for managing product reviews   |
+| [Order](http://api.norheimweb.com/order/)           | API endpoint for managing orders                  |
+| [Order Item](http://api.norheimweb.com/order-item/) | API endpoint for managing order items             |
+
+## Contributing
+
+We welcome contributions from the community. To contribute to the backend, please follow these steps:
+
+1. Fork the repository
+2. Create a new branch: `git checkout -b feature/your-feature-name`
+3. Make your changes and commit them: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin feature/your-feature-name`
+5. Create a pull request
 
 ## License
-See the LICENSE file for more information.
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
