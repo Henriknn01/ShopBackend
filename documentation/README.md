@@ -35,7 +35,7 @@ This guide provides step-by-step instructions on how to run Postman tests.
 1. Click on the **Environments** tab in the Postman application.
 2. Locate and open the **Wave Environment** from the list.
 3. Change the current value of the variable **admin_password** to the superuser password.
-4. Change the current value of the variable **admin_username** to the superuser email address.
+4. Change the current value of the variable **admin_email** to the superuser email address.
 5. Click **Save changes** to update the environment variables.
 
 ---
